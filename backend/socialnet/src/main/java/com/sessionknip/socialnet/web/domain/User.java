@@ -7,12 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +31,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
     private Set<Role> roles;
 
@@ -43,8 +44,34 @@ public class User implements UserDetails {
         this.firstName = "";
         this.lastName = "";
         this.email = "";
+        this.roles = Collections.singleton(Role.USER);
     }
 
+    public User(String username, String password, Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.firstName = "";
+        this.lastName = "";
+        this.email = "";
+    }
+
+    public void addRole(Role role) {
+        if (this.roles == null) {
+            roles = Collections.singleton(Role.USER);
+        }
+        roles.add(role);
+    }
+
+    public Set<Role> getRoles() {
+        if (this.roles == null) {
+            roles = Collections.singleton(Role.USER);
+        }
+        if (roles.size() == 0) {
+            roles.add(Role.USER);
+        }
+        return roles;
+    }
 
     public String toString() {
         if (firstName.isEmpty() || lastName.isEmpty()) {
@@ -53,28 +80,4 @@ public class User implements UserDetails {
         return String.format("%s \"%s\" %s", firstName, username, lastName);
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

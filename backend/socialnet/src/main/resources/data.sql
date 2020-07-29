@@ -1,4 +1,1 @@
-INSERT INTO
-    users(username, first_name, last_name, email, password)
-VALUES
-    ('Chatsky', 'Максим', 'Чацкий', 'sessionknip@gmail.com', '123')
+INSERT INTO users(username, first_name, last_name, email, password) VALUES('Chatsky', 'Максим', 'Чацкий', 'sessionknip@gmail.com', '$2a$04$h7e59fVN2ZaF8vSMIbMiiOW1KnuV9htY953t9YE4C7hmMD9CcK1H2');

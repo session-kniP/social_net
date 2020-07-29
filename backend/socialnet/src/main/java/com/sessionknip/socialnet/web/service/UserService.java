@@ -1,22 +1,15 @@
 package com.sessionknip.socialnet.web.service;
 
-import com.sessionknip.socialnet.web.repository.UserRepo;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import com.sessionknip.socialnet.web.domain.User;
 
-@Service
-public class UserService implements UserDetailsService {
+import java.util.List;
 
-    private final UserRepo userRepo;
+public interface UserService {
 
-    public UserService(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
+    User register(User candidate);
+    User findById(Long id);
+    User findByUsername(String username);
+    List<User> findAll();
+    void delete(Long id);
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsername(username);
-    }
 }
