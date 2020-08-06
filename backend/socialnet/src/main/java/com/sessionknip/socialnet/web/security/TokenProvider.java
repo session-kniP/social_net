@@ -77,19 +77,16 @@ public class TokenProvider {
     }
 
     //token validation
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token) throws TokenProviderException {
 
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
-            // if expiration time less than current time
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
+            // if expiration time less than current time then return false
+            return !claims.getBody().getExpiration().before(new Date());
 
-            return true;
-        } catch (SignatureException e) {
-            return false;
+        } catch (SignatureException | ExpiredJwtException | MalformedJwtException e) {
+            throw new TokenProviderException("Can't validate token");
         }
     }
 

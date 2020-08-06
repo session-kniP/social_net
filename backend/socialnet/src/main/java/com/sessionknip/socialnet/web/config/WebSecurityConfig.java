@@ -1,37 +1,17 @@
 package com.sessionknip.socialnet.web.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sessionknip.socialnet.web.domain.Role;
 import com.sessionknip.socialnet.web.security.TokenProvider;
-import com.sessionknip.socialnet.web.service.impl.UserServiceImpl;
-import lombok.Data;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.web.authentication.*;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -54,18 +34,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
-                .httpBasic().disable()
+                .httpBasic()
+                    .disable()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                    .csrfTokenRepository(csrfTokenRepository())  //CookieCsrfTokenRepository.withHttpOnlyFalse()
+
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests()
-                    .antMatchers(AUTH_ENDPOINT).permitAll()
+                    .antMatchers("/", AUTH_ENDPOINT).permitAll()
                     .antMatchers(ADMIN_ENDPOINT).hasRole(Role.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
-                    .apply(new SecurityConfig(provider));
+                    .apply(new SecurityConfig(provider))
+                .and()
+                    .cors();
 
     }
+
+    private CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X_CSRF_TOKEN");
+        return repository;
+    }
+
+
 
 }

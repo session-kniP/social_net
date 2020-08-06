@@ -1,6 +1,7 @@
 package com.sessionknip.socialnet.web.security;
 
 import com.sessionknip.socialnet.web.domain.User;
+import com.sessionknip.socialnet.web.service.exception.UserException;
 import com.sessionknip.socialnet.web.service.impl.UserServiceImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,12 +20,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUsername(username);
+        User user = null;
+        try {
+            user = userService.findByUsername(username);
+        } catch (UserException e) {
+            e.printStackTrace();
+        }
 
         if (user == null) {
             throw new UsernameNotFoundException(String.format("Can't find user with username %s", username));
         }
 
+        System.out.println("Loaded");
         return new UserDetailsImpl(user);
     }
 }

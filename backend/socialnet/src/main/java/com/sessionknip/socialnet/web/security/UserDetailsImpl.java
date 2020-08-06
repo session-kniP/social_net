@@ -1,6 +1,7 @@
 package com.sessionknip.socialnet.web.security;
 
 import com.sessionknip.socialnet.web.domain.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +9,7 @@ import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
 
+    @Getter
     private final User user;
 
     public UserDetailsImpl(User user) {

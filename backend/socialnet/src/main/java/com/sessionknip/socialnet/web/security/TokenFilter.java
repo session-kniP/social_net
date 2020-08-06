@@ -23,12 +23,16 @@ public class TokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String token = provider.resolveToken((HttpServletRequest) request);
 
-        if (token != null && provider.validateToken(token)) {
-            Authentication authentication = provider.getAuthentication(token);
+        try {
+            if (token != null && provider.validateToken(token)) {
+                Authentication authentication = provider.getAuthentication(token);
 
-            if (authentication != null) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (authentication != null) {
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
+        } catch (TokenProviderException e) {
+            throw new ServletException("Can't apply filter to token", e);
         }
 
         filterChain.doFilter(request, response);
