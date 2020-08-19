@@ -3,6 +3,7 @@ package com.sessionknip.socialnet.web.domain;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -11,6 +12,9 @@ import java.util.Objects;
 @Data
 @Table(name = "users_info")
 public class UserInfo {
+
+    @Value("${upload.files.path}")
+    private String mediaPath;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +35,13 @@ public class UserInfo {
     @Enumerated(value = EnumType.ORDINAL)
     private Sex sex;
 
-    @Column(unique = true, nullable = true)
+    @Column(unique = true)
     private String email;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_media_id")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Media avatar;
 
     public UserInfo() {
         this.firstName = "";
@@ -62,7 +71,6 @@ public class UserInfo {
         if (o == null || getClass() != o.getClass()) return false;
         UserInfo userInfo = (UserInfo) o;
         return Objects.equals(id, userInfo.id) &&
-                Objects.equals(user, userInfo.user) &&
                 Objects.equals(firstName, userInfo.firstName) &&
                 Objects.equals(lastName, userInfo.lastName) &&
                 sex == userInfo.sex &&
@@ -71,6 +79,6 @@ public class UserInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, firstName, lastName, sex, email);
+        return Objects.hash(id, firstName, lastName, sex, email);
     }
 }

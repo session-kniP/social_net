@@ -12,6 +12,7 @@ public interface UserService {
     User findByUsername(String username) throws UserException;
     List<User> findAll();
     void edit(User target, User source) throws UserException;
+    void update(User user);
     void delete(Long id);
 
 }

@@ -16,14 +16,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry
                 .addMapping("/**")
-                .allowedOrigins("http://192.168.1.59:8080", "http://localhost:3000")
+                .allowedOrigins("http://192.168.1.59:8080", "http://localhost:3000", "http://192.168.1.36:3000", "192.168.1.36:3000")
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),
                         HttpMethod.PUT.name(),
                         HttpMethod.DELETE.name()
                 )
-                .allowedHeaders("Content-Type", "Accept", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization", "_csrf")
+                .allowedHeaders("Content-Type", "Accept", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization", "_csrf", "Process-Data")
 //                .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
                 .allowCredentials(true).maxAge(3600);
     }

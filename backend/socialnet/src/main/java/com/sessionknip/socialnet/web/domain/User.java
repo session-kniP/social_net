@@ -22,16 +22,28 @@ public class User {
 
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_info_id")
     @NotFound(action = NotFoundAction.IGNORE)
     private UserInfo userInfo = new UserInfo();
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_community_id")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private UserCommunity userCommunity = new UserCommunity();
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
     private Set<Role> roles;
 
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private User friendsOwner;
+
     public User() {
+        this.userInfo = new UserInfo();
+        this.userCommunity = new UserCommunity();
+        this.roles = Collections.singleton(Role.USER);
     }
 
     public User(String username, String password) {
@@ -39,6 +51,7 @@ public class User {
         this.password = password;
         this.roles = Collections.singleton(Role.USER);
         this.userInfo = new UserInfo();
+        this.userCommunity = new UserCommunity();
     }
 
     public User(String username, String password, Set<Role> roles) {
@@ -46,6 +59,7 @@ public class User {
         this.password = password;
         this.roles = roles;
         this.userInfo = new UserInfo();
+        this.userCommunity = new UserCommunity();
     }
 
     public void addRole(Role role) {
@@ -72,14 +86,23 @@ public class User {
         return userInfo;
     }
 
+    public UserCommunity getUserCommunity() {
+        if (userCommunity == null) {
+            userCommunity = new UserCommunity();
+        }
+        return userCommunity;
+    }
+
     @Override
     public String toString() {
-        String firstName = userInfo.getFirstName();
-        String lastName = userInfo.getLastName();
-        if (firstName.isEmpty() || lastName.isEmpty()) {
-            return username;
+        if (userInfo != null) {
+            String firstName = userInfo.getFirstName();
+            String lastName = userInfo.getLastName();
+            if (!firstName.isEmpty() && !lastName.isEmpty()) {
+                return String.format("%s \"%s\" %s", firstName, username, lastName);
+            }
         }
-        return String.format("%s \"%s\" %s", firstName, username, lastName);
+        return username;
     }
 
     @Override
@@ -89,12 +112,11 @@ public class User {
         User user = (User) o;
         return Objects.equals(id, user.id) &&
                 Objects.equals(username, user.username) &&
-                Objects.equals(userInfo, user.userInfo) &&
                 Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, userInfo, roles);
+        return Objects.hash(id, username, roles);
     }
 }

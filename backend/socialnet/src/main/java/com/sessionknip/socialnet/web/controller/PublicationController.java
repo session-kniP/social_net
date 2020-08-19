@@ -31,9 +31,10 @@ public class PublicationController extends NullAndEmptyChecker {
     @GetMapping("/news")
     public ResponseEntity<List<PublicationResponseDto>> getNews(
             @RequestParam(name = "page", required = false) Integer page,
-            @RequestParam(name = "howMuch", required = false) Integer howMuch
+            @RequestParam(name = "howMuch", required = false) Integer howMuch,
+            @RequestParam(name = "filters") String[] filters
     ) {
-
+        //todo user filters
         List<PublicationResponseDto> news;
 
         //page or howMuch can be null separately

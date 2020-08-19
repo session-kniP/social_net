@@ -84,6 +84,11 @@ public class UserServiceImpl extends NullAndEmptyChecker implements UserService 
     }
 
     @Override
+    public void update(User user) {
+        userRepo.save(user);
+    }
+
+    @Override
     public void delete(Long id) {
         userRepo.deleteById(id);
     }

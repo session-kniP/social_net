@@ -57,7 +57,7 @@ public class AuthController {
 
         String token = provider.createToken(username, new ArrayList<>(user.getRoles()));
 
-        LoginResponseDto response = new LoginResponseDto(username, token);
+        LoginResponseDto response = new LoginResponseDto(user.getId(), username, token);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

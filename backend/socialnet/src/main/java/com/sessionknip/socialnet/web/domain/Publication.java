@@ -2,7 +2,6 @@ package com.sessionknip.socialnet.web.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;

@@ -2,6 +2,7 @@ package com.sessionknip.socialnet.web.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -20,6 +21,7 @@ public class TokenFilter extends GenericFilterBean {
     }
 
     @Override
+    @Transactional
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String token = provider.resolveToken((HttpServletRequest) request);
 

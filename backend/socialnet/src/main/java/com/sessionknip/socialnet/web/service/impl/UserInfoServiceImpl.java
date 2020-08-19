@@ -5,10 +5,13 @@ import com.sessionknip.socialnet.web.repository.UserInfoRepo;
 import com.sessionknip.socialnet.web.service.NullAndEmptyChecker;
 import com.sessionknip.socialnet.web.service.UserInfoService;
 import com.sessionknip.socialnet.web.service.exception.UserInfoException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfoService {
@@ -46,6 +49,23 @@ public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfo
     }
 
     @Override
+    public List<UserInfo> findByFilters(Integer page, Integer howMuch, String[] filters) {
+        Set<UserInfo> users = new HashSet<>();
+
+        for (String filter : filters) {
+            String template = String.format("%s%%", filter.trim());
+            users.addAll(userInfoRepo.findByFirstNameLikeOrLastNameLikeIgnoreCase(template, template, PageRequest.of(page, howMuch)));
+        }
+
+        return new ArrayList<>(users);
+    }
+
+    @Override
+    public List<UserInfo> findSeveral(Integer page, Integer howMuch) {
+        return userInfoRepo.findAll(PageRequest.of(page, howMuch)).getContent();
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         try {
             return findByEmail(email) != null;
@@ -55,7 +75,6 @@ public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfo
     }
 
     @Override
-    @Transactional
     public void edit(UserInfo target, UserInfo source) throws UserInfoException {
         target = editNotSave(target, source);
 
@@ -78,8 +97,10 @@ public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfo
         }
 
         if (notNullAndNotEmpty(source.getEmail())) {
-            if (existsByEmail(source.getEmail())) {
-                throw new UserInfoException("User info with such email already exists");
+            if (!source.getEmail().equals(target.getEmail())) {
+                if (existsByEmail(source.getEmail())) {
+                    throw new UserInfoException("User info with such email already exists");
+                }
             }
             target.setEmail(source.getEmail());
         }
