@@ -1,0 +1,8 @@
+:root {
+    --bgcolor: #222222;
+}
+
+.chat-form {
+    height: 100%;
+    background-color: var(--bgcolor);
+}

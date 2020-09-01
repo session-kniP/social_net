@@ -1,0 +1,39 @@
+header {
+    height: 0;
+}
+
+input {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #383838;
+    color: #e2e2e2;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    padding: 0%;
+    margin: 0%;
+}
+
+.content-block-main {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.page-body {
+    padding: 0.5%;
+    margin-top: 0;
+    position: relative;
+}
+
+::selection {
+    background-color: rgb(216, 214, 213);
+}
+
+.error-msg {
+    color: rgb(255, 69, 69);
+}
+
+.success-msg {
+    color: rgb(69, 170, 100)
+}

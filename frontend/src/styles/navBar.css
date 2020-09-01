@@ -1,0 +1,83 @@
+.nav-bar {
+    top: 0;
+
+    padding-top: 0%;
+    margin-top: 0%;
+    margin: 0%;
+    padding: 0%;
+    height: 60px;
+    width: 100%;
+
+    justify-content: center;
+    vertical-align: middle;
+
+    background: rgb(128,69,69);
+    background: linear-gradient(0deg, rgba(128,69,69,1) 0%, rgba(166,87,135,1) 100%);
+
+}
+
+.nav-wrapper * {
+    font-size: 1.2rem;
+    background-color: inherit;
+    color: #e2e2e2;
+    text-decoration-line: none;
+    position: relative;
+    margin-top: 1px;
+    padding: 0.5% 2% 0;
+
+    justify-content: center;
+    vertical-align: middle;
+
+}
+
+.nav-wrapper>* {
+    vertical-align: middle;   
+    padding: 0;
+    padding-right: 2%;
+    padding-left: 2%;
+    justify-content: center;
+}
+
+.nav-link {
+
+    margin-left: auto;
+    height: 100%;
+    padding: 0;
+    padding-left: 2%;
+    margin-top: 13px;
+
+}
+
+.nav-wrapper>.auth-links>.nav-link {
+    float: right;
+}
+
+.nav-wrapper>.mapping-links>.nav-link {
+    float: left;
+}
+
+.nav-link:hover {
+    filter: brightness(.8);
+}
+
+.nav-link, .nav-link:hover {
+    transition: .3s;
+}
+
+.additional-comps {
+    vertical-align: middle;
+    justify-content: center;
+}
+
+.logout-link {
+    margin-top: 8px;
+    float: right;
+}
+
+.logout-link:hover {
+    filter: brightness(.8);
+}
+
+.logout-link, .logout-link:hover {
+    transition: .3s;
+}

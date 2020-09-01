@@ -1,0 +1,84 @@
+:root {
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.authForm {
+    padding-top: 1rem;
+    display: flexbox;
+    margin: 0 auto;
+    width: auto;
+    position: relative;
+    margin-left: auto;
+}
+
+.authForm>h2 {
+    padding: .1rem;
+    margin: 0;
+}
+
+.authForm>h3 {
+    padding: .1rem;
+    margin: 0;
+}
+
+.authForm>p>a {
+    color: fuchsia;
+}
+
+.authField {
+    border-style: solid;
+    border-radius: 5px;
+
+    background-color: #222222;
+
+    margin: 1rem;
+    padding: .2rem;
+    color: whitesmoke;
+    font-size: 1.2rem;
+    font-family: var(--font-family);
+    font-weight: 600;
+}
+
+
+.authField:focus {
+    background-color: darkslategray;
+}
+
+.authSubmitBtn {
+
+    margin: 1rem;
+
+    background-color: #222222;
+    color: whitesmoke;
+    font-weight: 600;
+    font-size: 1.2rem;
+    font-family: var(--font-family);
+    padding: .1rem 1rem .1rem;
+    border-radius: 10%;
+    border: 3px solid black;
+    transition: .4s;
+}
+
+.authSubmitBtn:hover {
+    background-color: rgb(128,69,69);
+    color: black;
+    transition: .4s;
+}
+
+.authSubmitBtn:focus {
+    flood-color: darkviolet;
+    outline-style: none;
+    border-color: darkviolet;
+    border-color: darkviolet;
+    outline-color: darkviolet;
+}
+
+
+.authField::placeholder {
+    filter: opacity(.7);
+}
+
+.authField:focus {
+    outline: none;
+}

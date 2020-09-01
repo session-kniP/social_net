@@ -1,15 +1,23 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+require('babel-polyfill');
 
 module.exports = {
-    entry: './src/index.js',
+    node: {
+        fs: 'empty',
+    },
+    entry: {
+        app: ['babel-polyfill', './src/index.js'],
+    },
     output: {
         path: path.join(__dirname, '/generated'),
         filename: 'index_bundle.js',
         publicPath: '/',
     },
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
+        port: 3000,
     },
     module: {
         rules: [

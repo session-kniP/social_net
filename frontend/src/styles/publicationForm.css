@@ -1,0 +1,116 @@
+:root {
+    --bgcolor: #222222;
+    --send-color: rgb(69, 69, 128);
+    --accept-color: rgb(69, 69, 128);
+    --decline-color: rgb(255, 69, 69);
+}
+
+.publication-form {
+    width: 90%;
+    margin: 5%;
+    background-color: #111111;
+    overflow: auto;
+}
+
+.publication-form-title {
+    padding-left: 3%;
+    padding-top: 1%;
+}
+
+.publication-form-theme {
+    color: darkmagenta;
+    font-weight: 600;
+    background-color: var(--bgcolor);
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    padding: 1%;
+    margin: 1%;
+    width: 95%;
+}
+
+.publication-form-text {
+    max-height: 20rem;
+    background-color: var(--bgcolor);
+    margin: 1%;
+    padding: 1%;
+    width: 95%;
+    outline: none;
+    border: none;
+    resize: none;
+    font-weight: 400;
+    color: cornsilk;
+    /* height: max-content; */
+    font-size: 1.2rem;
+}
+
+.publication-form-button {
+    cursor: pointer;
+    margin: 1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+    background-color: var(--bgcolor);
+    color: whitesmoke;
+    padding: 0.1rem 1rem 0.1rem;
+    border-radius: 5px;
+    border: 3px solid black;
+    transition: 0.4s;
+}
+
+.send {
+    float: right;
+    margin-top: 0;
+    /* margin-left: 80%; */
+    margin-right: 2rem;
+    margin-bottom: 0;
+}
+
+.send:hover {
+    background-color: var(--send-color);
+    color: black;
+    transition: 0.4s;
+}
+
+.accept {
+    float: right;
+    margin-top: 0;
+    /* margin-left: 80%; */
+    margin-right: 2rem;
+    margin-bottom: 0;
+}
+
+.accept:hover {
+    background-color: var(--send-color);
+    color: black;
+    transition: 0.4s;
+}
+
+.decline {
+    float: right;
+    margin-top: 0;
+    /* margin-left: 80%; */
+    margin-right: 2rem;
+    margin-bottom: 0;
+}  
+
+
+.decline:hover {
+    background-color: var(--decline-color);
+    color: black;
+    transition: 0.4s;
+}
+
+.decline-rotate {
+    float: right;
+    margin-top: 0;
+    /* margin-left: 80%; */
+    margin-right: 5%;
+    padding: 0 5px 0;
+}
+
+.decline-rotate:hover {
+    transform: rotate(90deg);
+    background-color: var(--decline-color);
+    color: black;
+    transition: 0.4s;
+}

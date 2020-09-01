@@ -1,0 +1,56 @@
+.publication {
+    margin: 10px auto;
+    padding: 3px;
+    background-color: #222222;
+}
+
+.publication-info {
+    border-bottom: 1px solid darkgray;
+    margin: 1%;
+}
+
+.author-avatar-wrapper {
+    width: 10%;
+    margin: 1%;
+    display: inline-block;
+}
+
+/* .author-avatar-tn {
+
+} */
+
+.publication-author-date-info {
+    width: 80%;
+    margin: 1%;
+    display: inline-block;
+}
+
+.publication-author-info {
+    font-size: .7rem;
+    text-decoration: none;
+}
+
+.publication-author-info:hover {
+    color: chocolate;
+}
+
+.publication-date-info {
+    font-size: .5rem;
+}
+
+.publication-content {
+    margin: 1%;
+    padding-bottom: 1%;
+}
+
+.publication-theme {
+    color: #9666a8;
+    font-size: 1.5rem;
+    padding: 1rem;
+}
+
+.publication-text {
+    width: 100%;
+    text-align: justify;
+}
+

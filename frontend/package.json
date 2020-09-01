@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --mode development --open --hot",
+    "start": "webpack-dev-server --host 192.168.1.36 --mode development --open --hot",
     "build": "webpack --mode production"
   },
+  "historyApiFallback": true,
   "author": "session-kniP <sessionknip@gmail.com>",
   "license": "ISC",
   "devDependencies": {
@@ -15,15 +16,24 @@
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
-    "webpack": "^4.43.0",
+    "babel-polyfill": "^6.26.0",
+    "regenerator-runtime": "^0.13.7",
+    "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "@stomp/stompjs": "^5.4.4",
+    "config": "^3.3.1",
     "css-loader": "^3.6.0",
+    "fs": "0.0.1-security",
     "html-webpack-plugin": "^4.3.0",
+    "http-proxy-middleware": "^1.0.5",
+    "http-status-codes": "^1.4.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
+    "sockjs-client": "^1.5.0",
     "style-loader": "^1.2.1",
     "webpack-dev-server": "^3.11.0"
   }
