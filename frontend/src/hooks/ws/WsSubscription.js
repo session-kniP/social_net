@@ -5,7 +5,6 @@ import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import 'regenerator-runtime/runtime';
 
-
 export class WsSubscription extends React.Component {
     //props: subscription, messageCallback
     constructor(props) {
@@ -15,14 +14,13 @@ export class WsSubscription extends React.Component {
         this.connect = this.connect.bind(this);
         this.onError = this.onError.bind(this);
         this.onMessageReceived = this.onMessageReceived.bind(this);
-        this.getClient = this.getClient.bind(this);        
+        this.getClient = this.getClient.bind(this);
 
         this.state = {
-            client: null,
+            client: undefined,
             subscription: props.subscription,
-            messageCallback: props.messageCallback
+            messageCallback: props.messageCallback,
         };
-
     }
 
     connect(onConnected, onError) {
@@ -33,18 +31,14 @@ export class WsSubscription extends React.Component {
 
         //deprecated
         const client = Stomp.over(socket);
-        // client.debug = () => {};
+        client.debug = () => {};
 
         client.connect(
             {
-                'Authorization': 'Bearer_' + token,
-                'Access-Control-Allow-Origin': '**',
-                'Access-Control-Allow-Credentials': true,
+                Authorization: 'Bearer_' + token,
             },
             () => onConnected(client),
             () => onError()
         );
     }
-
-    
 }

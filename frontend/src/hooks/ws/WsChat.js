@@ -3,21 +3,23 @@ import PropTypes from 'prop-types';
 import { WsSubscription } from './WsSubscription';
 import { WS_CHAT, WS_CHAT_SUBSCRIPTION } from '../../constants/mappings';
 import 'regenerator-runtime/runtime';
-import { stat } from 'fs';
 
 class WsChat extends WsSubscription {
     //props: chatId
     constructor(props) {
+        
         super({ subscription: WS_CHAT_SUBSCRIPTION + '/' + props.chatId });
+
+        this.sendMessage = this.sendMessage.bind(this);
+        this.messageCallback = this.messageCallback.bind(this);
+        this.onConnected = this.onConnected.bind(this);
+        this.onDisconnected = this.onDisconnected.bind(this);
 
         const newState = this.state;
         newState.chatId = props.chatId;
         newState.chatCallback = props.chatCallback;
 
-        this.state = newState;
-
-        this.sendMessage = this.sendMessage.bind(this);
-        this.messageCallback = this.messageCallback.bind(this);
+        this.state = newState;        
     }
 
     messageCallback(body) {
@@ -34,12 +36,14 @@ class WsChat extends WsSubscription {
         const newState = this.state;
         newState.client = client;
 
-        console.log('OLD', this.state);
-        console.log('NEW', newState);
-
-        this.setState(newState);
+        // this.setState(newState);
+        this.state = newState;
         // stateCallback(newState);
         console.log('ON CONNECTED');
+    }
+
+    onDisconnected(client) {
+        
     }
 
     onMessageReceived(payload) {

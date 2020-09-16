@@ -12,6 +12,7 @@ import '../styles/publicationForm.css';
 
 export const ChatPage = () => {
     const [messages, setMessages] = useState(null);
+    const [chatTitle, setChatTitle] = useState(null);
     const {httpRequest} = useHttpRequest();
     let textInput = React.createRef();
 
@@ -22,11 +23,14 @@ export const ChatPage = () => {
         console.log(chatInstance);
     }
 
-    const loadChat = useCallback(async () => {
+    const loadChat = useCallback(async (chatId) => {
         try {
-            const response = await httpRequest({url: '/'})
+            const chat = await httpRequest({url: `${COMMUNITY_CHAT}/${chatId}`, method: 'GET'});
+            setChatTitle(chat.title);
+            setMessages(chat.chatList);
         } catch (e) {
-
+            //todo Write message to html
+            console.log(e.message);
         }
     }, [])
 
@@ -34,7 +38,7 @@ export const ChatPage = () => {
         chat = new WsChat({ chatId: id, chatCallback: chatCallback });
         chat.connect();
 
-
+        loadChat(id);
     })
 
     const sendBtnHandler = (event) => {

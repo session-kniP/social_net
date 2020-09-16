@@ -5,8 +5,6 @@ import '../styles/index.css';
 import '../styles/navBar.css';
 
 const NavBar = ({ navClassName = null, mappingLinks = null, authLinks = null, additionalComps = null }) => {
-    console.log(additionalComps);
-
     const spreadLinks = (links) => {
         return links.map((link) => {
             return (
