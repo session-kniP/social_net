@@ -4,11 +4,13 @@ import com.sessionknip.socialnet.web.domain.User;
 import com.sessionknip.socialnet.web.domain.UserCommunity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,29 +19,35 @@ import java.util.List;
 @Repository
 public interface UserCommunityRepo extends JpaRepository<UserCommunity, Long> {
 
-    @Query(value = "select uc.subscriptions from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    Page<User> findSubscriptionsByUser(@Param("id") Long id, Pageable pageable);
+    @Query(value = "from UserCommunity uc where uc.user=:user")
+    UserCommunity findByUser(@Param("user") User user);
+
+    @Query(value = "from UserCommunity uc join uc.user u where u.id=:userId")
+    UserCommunity findByUserId(@Param("userId") Long userId);
 
     @Query(value = "select uc.subscriptions from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    List<User> findSubscriptionsByUser(@Param("id") Long id);
+    Page<User> findSubscriptionsByUserId(@Param("id") Long id, Pageable pageable);
+
+    @Query(value = "select uc.subscriptions from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
+    List<User> findSubscriptionsByUserId(@Param("id") Long id);
 
     @Query(value = "select uc.subscribers from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    Page<User> findSubscribersByUser(@Param("id") Long id, Pageable pageable);
+    Page<User> findSubscribersByUserId(@Param("id") Long id, Pageable pageable);
 
     @Query(value = "select uc.subscribers from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    List<User> findSubscribersByUser(@Param("id") Long id);
+    List<User> findSubscribersByUserId(@Param("id") Long id);
 
     @Query(value = "select uc.incomingFriends from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    Page<User> findIncomingFriendsByUser(@Param("id") Long id, Pageable pageable);
+    Page<User> findIncomingFriendsByUserId(@Param("id") Long id, Pageable pageable);
 
     @Query(value = "select uc.incomingFriends from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    List<User> findIncomingFriendsByUser(@Param("id") Long id);
+    List<User> findIncomingFriendsByUserId(@Param("id") Long id);
 
     @Query(value = "select uc.outgoingFriends from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    Page<User> findOutgoingFriendsByUser(@Param("id") Long id, Pageable pageable);
+    Page<User> findOutgoingFriendsByUserId(@Param("id") Long id, Pageable pageable);
 
     @Query(value = "select uc.outgoingFriends from UserCommunity uc join User u on uc.id = u.id where u.id=:id")
-    List<User> findOutgoingFriendsByUser(@Param("id") Long id);
+    List<User> findOutgoingFriendsByUserId(@Param("id") Long id);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "insert into user_subs(subscriber_id, subscription_id) values (:subscriber_id, :subscription_id)", nativeQuery = true)
@@ -68,4 +76,10 @@ public interface UserCommunityRepo extends JpaRepository<UserCommunity, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "delete from user_friends where outgoing_friend_id=:id", nativeQuery = true)
     void removeOutgoingFriendById(@Param("id") Long id);
+
+    @Query(value = "select uc.subscriptions from UserCommunity uc where :subscription member of uc.subscriptions and uc.id=:id")
+    List<User> findSubscriptionsWithObjectByUserId(@Param("subscription") User user, @Param("id") Long id, @PageableDefault(size = 1) Pageable pageable);
+
+    @Query(value = "select uc.subscriptions from UserCommunity uc where :subscriber member of uc.subscribers and uc.id=:id")
+    List<User> findSubscribersWithObjectByUserId(@Param("subscriber") User user, @Param("id") Long id, @PageableDefault(size = 1) Pageable pageable);
 }

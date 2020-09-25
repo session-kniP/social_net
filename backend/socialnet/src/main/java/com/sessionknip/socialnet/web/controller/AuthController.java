@@ -5,7 +5,7 @@ import com.sessionknip.socialnet.web.dto.request.LoginRequestDto;
 import com.sessionknip.socialnet.web.dto.response.LoginResponseDto;
 import com.sessionknip.socialnet.web.dto.request.RegRequestDto;
 import com.sessionknip.socialnet.web.security.TokenProvider;
-import com.sessionknip.socialnet.web.service.exception.UserException;
+import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import com.sessionknip.socialnet.web.service.impl.UserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +43,7 @@ public class AuthController {
         User user;
         try {
             user = userService.findByUsername(username);
-        } catch (UserException e) {
+        } catch (UserServiceException e) {
             return new ResponseEntity<>(new LoginResponseDto("Incorrect username or password"), HttpStatus.FORBIDDEN);
         }
 
@@ -69,7 +69,7 @@ public class AuthController {
         User candidate = null;
         try {
             candidate = userService.findByUsername(regRequest.getUsername());
-        } catch (UserException e) {
+        } catch (UserServiceException e) {
             e.printStackTrace();
         }
 
@@ -83,7 +83,7 @@ public class AuthController {
 
         try {
             userService.register(new User(regRequest.getUsername(), regRequest.getPassword()));
-        } catch (UserException e) {
+        } catch (UserServiceException e) {
             e.printStackTrace();
         }
 

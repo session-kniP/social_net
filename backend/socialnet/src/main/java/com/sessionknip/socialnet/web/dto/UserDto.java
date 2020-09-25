@@ -1,13 +1,10 @@
 package com.sessionknip.socialnet.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sessionknip.socialnet.web.domain.Role;
 import com.sessionknip.socialnet.web.domain.User;
 import lombok.Data;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.Set;
 
 @Data

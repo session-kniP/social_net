@@ -6,4 +6,8 @@ public abstract class NullAndEmptyChecker {
         return object != null && !object.isEmpty();
     }
 
+    protected boolean nullOrEmpty(String object) {
+        return !notNullAndNotEmpty(object);
+    }
+
 }

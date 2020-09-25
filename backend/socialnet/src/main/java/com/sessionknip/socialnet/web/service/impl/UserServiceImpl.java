@@ -6,8 +6,8 @@ import com.sessionknip.socialnet.web.repository.UserRepo;
 import com.sessionknip.socialnet.web.service.NullAndEmptyChecker;
 import com.sessionknip.socialnet.web.service.UserInfoService;
 import com.sessionknip.socialnet.web.service.UserService;
-import com.sessionknip.socialnet.web.service.exception.UserException;
-import com.sessionknip.socialnet.web.service.exception.UserInfoException;
+import com.sessionknip.socialnet.web.service.exception.UserServiceException;
+import com.sessionknip.socialnet.web.service.exception.UserInfoServiceException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,17 +27,17 @@ public class UserServiceImpl extends NullAndEmptyChecker implements UserService 
     }
 
     @Bean
-    private BCryptPasswordEncoder passwordEncoder() throws UserException {
+    private BCryptPasswordEncoder passwordEncoder() throws UserServiceException {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder;
     }
 
     @Override
-    public User register(User candidate) throws UserException {
+    public User register(User candidate) throws UserServiceException {
         User user = userRepo.findByUsername(candidate.getUsername());
 
         if (user != null) {
-            throw new UserException("User with such username already exists");
+            throw new UserServiceException("User with such username already exists");
         }
 
         user = new User(candidate.getUsername(), passwordEncoder().encode(candidate.getPassword()));
@@ -47,17 +47,17 @@ public class UserServiceImpl extends NullAndEmptyChecker implements UserService 
     }
 
     @Override
-    public User findById(Long id) throws UserException {
-        return userRepo.findById(id).orElseThrow(() -> new UserException("Can't find user by id"));
+    public User findById(Long id) throws UserServiceException {
+        return userRepo.findById(id).orElseThrow(() -> new UserServiceException("Can't find user by id"));
         //todo log + exception
     }
 
     @Override
-    public User findByUsername(String username) throws UserException {
+    public User findByUsername(String username) throws UserServiceException {
         User user = userRepo.findByUsername(username);
 
         if (user == null) {
-            throw new UserException(String.format("Can't find user with username '%s'", username));
+            throw new UserServiceException(String.format("Can't find user with username '%s'", username));
         }
 
         return user;
@@ -70,14 +70,14 @@ public class UserServiceImpl extends NullAndEmptyChecker implements UserService 
 
     @Override
     @Transactional
-    public void edit(User target, User source) throws UserException {
+    public void edit(User target, User source) throws UserServiceException {
         try {
             target.getUserInfo().setUser(target);
             UserInfo userInfo = userInfoService.editNotSave(target.getUserInfo(), source.getUserInfo());
 
             target.setUserInfo(userInfo);
-        } catch (UserInfoException e) {
-            throw new UserException("Can't edit user info", e);
+        } catch (UserInfoServiceException e) {
+            throw new UserServiceException("Can't edit user info", e);
         }
 
         userRepo.save(target);

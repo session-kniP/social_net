@@ -4,7 +4,7 @@ import com.sessionknip.socialnet.web.domain.Publication;
 import com.sessionknip.socialnet.web.repository.PublicationRepo;
 import com.sessionknip.socialnet.web.service.NullAndEmptyChecker;
 import com.sessionknip.socialnet.web.service.PublicationService;
-import com.sessionknip.socialnet.web.service.exception.PublicationException;
+import com.sessionknip.socialnet.web.service.exception.PublicationServiceException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -23,21 +23,21 @@ public class PublicationServiceImpl extends NullAndEmptyChecker implements Publi
     }
 
     @Override
-    public void makePublication(Publication publication) throws PublicationException {
+    public void makePublication(Publication publication) throws PublicationServiceException {
         //todo check format
         publicationRepo.save(publication);
     }
 
     @Override
-    public Publication findById(Long id) throws PublicationException {
-        return publicationRepo.findById(id).orElseThrow(() -> new PublicationException("Can't find publication by id"));
+    public Publication findById(Long id) throws PublicationServiceException {
+        return publicationRepo.findById(id).orElseThrow(() -> new PublicationServiceException("Can't find publication by id"));
     }
 
     @Override
-    public List<Publication> findByTheme(String theme) throws PublicationException {
+    public List<Publication> findByTheme(String theme) throws PublicationServiceException {
         List<Publication> publications = publicationRepo.findByTheme(theme);
         if (publications == null || publications.size() == 0) {
-            throw new PublicationException(String.format("Can't find publication with theme '%s'", theme));
+            throw new PublicationServiceException(String.format("Can't find publication with theme '%s'", theme));
         }
 
         return publications;

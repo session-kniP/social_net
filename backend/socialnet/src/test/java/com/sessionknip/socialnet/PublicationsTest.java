@@ -2,9 +2,8 @@ package com.sessionknip.socialnet;
 
 import com.sessionknip.socialnet.web.domain.Publication;
 import com.sessionknip.socialnet.web.domain.User;
-import com.sessionknip.socialnet.web.domain.UserInfo;
 import com.sessionknip.socialnet.web.repository.PublicationRepo;
-import com.sessionknip.socialnet.web.service.exception.UserException;
+import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import com.sessionknip.socialnet.web.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class PublicationsTest {
         User registered = null;
         try {
             registered = userService.register(user);
-        } catch (UserException e) {
+        } catch (UserServiceException e) {
             e.printStackTrace();
         }
 

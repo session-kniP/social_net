@@ -1,15 +1,15 @@
 package com.sessionknip.socialnet.web.service;
 
 import com.sessionknip.socialnet.web.domain.Publication;
-import com.sessionknip.socialnet.web.service.exception.PublicationException;
+import com.sessionknip.socialnet.web.service.exception.PublicationServiceException;
 
 import java.util.List;
 
 public interface PublicationService {
 
-    void makePublication(Publication publication) throws PublicationException;
-    Publication findById(Long id) throws PublicationException;
-    List<Publication> findByTheme(String theme) throws PublicationException;
+    void makePublication(Publication publication) throws PublicationServiceException;
+    Publication findById(Long id) throws PublicationServiceException;
+    List<Publication> findByTheme(String theme) throws PublicationServiceException;
     List<Publication> findByKeywords(String[] keywords);
     List<Publication> findByKeywords(String[] keywords, Integer page, Integer howMuch);
     List<Publication> findMultiple();

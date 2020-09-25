@@ -3,13 +3,13 @@ package com.sessionknip.socialnet.web.controller;
 import com.sessionknip.socialnet.web.domain.Media;
 import com.sessionknip.socialnet.web.domain.User;
 import com.sessionknip.socialnet.web.domain.UserInfo;
-import com.sessionknip.socialnet.web.dto.MessageDto;
+import com.sessionknip.socialnet.web.dto.InfoMessageDto;
 import com.sessionknip.socialnet.web.dto.UserDto;
 import com.sessionknip.socialnet.web.security.UserDetailsImpl;
 import com.sessionknip.socialnet.web.service.MediaService;
 import com.sessionknip.socialnet.web.service.UserService;
 import com.sessionknip.socialnet.web.service.exception.MediaServiceException;
-import com.sessionknip.socialnet.web.service.exception.UserException;
+import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -62,14 +62,14 @@ public class ProfileController {
 
             Resource avatar = mediaService.getAvatar(user);
             return new ResponseEntity<>(avatar, HttpStatus.OK);
-        } catch (MediaServiceException | UserException e) {
+        } catch (MediaServiceException | UserServiceException e) {
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
 
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<MessageDto> edit(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserDto userDto) {
+    public ResponseEntity<InfoMessageDto> edit(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserDto userDto) {
 
         User editUser = new User();
         //todo edit info nullable
@@ -84,15 +84,15 @@ public class ProfileController {
 
         try {
             userService.edit(userDetails.getUser(), editUser);
-        } catch (UserException e) {
-            return new ResponseEntity<>(new MessageDto(e.getMessage() + ". " + e.getCause().getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (UserServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage() + ". " + e.getCause().getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>(new MessageDto("Profile successfully edited"), HttpStatus.OK);
+        return new ResponseEntity<>(new InfoMessageDto("Profile successfully edited"), HttpStatus.OK);
     }
 
     @PostMapping("/loadAvatar")
-    public ResponseEntity<MessageDto> loadAvatar(
+    public ResponseEntity<InfoMessageDto> loadAvatar(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam MultipartFile avatar
     ) {
@@ -105,11 +105,11 @@ public class ProfileController {
             try {
                 mediaService.saveAvatar(userDetails.getUser(), new Media(filename), avatar);
             } catch (MediaServiceException e) {
-                return new ResponseEntity<>(new MessageDto("Error while avatar uploading: " + e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(new InfoMessageDto("Error while avatar uploading: " + e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }
 
-        return new ResponseEntity<>(new MessageDto("Successfully uploaded"), HttpStatus.OK);
+        return new ResponseEntity<>(new InfoMessageDto("Successfully uploaded"), HttpStatus.OK);
     }
 
 

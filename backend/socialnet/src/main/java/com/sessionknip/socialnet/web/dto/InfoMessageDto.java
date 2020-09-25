@@ -3,12 +3,12 @@ package com.sessionknip.socialnet.web.dto;
 import lombok.Data;
 
 @Data
-public class MessageDto {
+public class InfoMessageDto {
     private String message;
 
-    public MessageDto(String message) {
+    public InfoMessageDto(String message) {
         this.message = message;
     }
 
-    public MessageDto() { }
+    public InfoMessageDto() { }
 }

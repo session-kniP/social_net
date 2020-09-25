@@ -1,15 +1,11 @@
 package com.sessionknip.socialnet.web.domain;
 
 import lombok.Data;
-import org.hibernate.annotations.*;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.web.PageableDefault;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,18 +24,18 @@ public class UserCommunity {
     private User user;
 
 
-    @LazyCollection(value = LazyCollectionOption.FALSE)
+//    @LazyCollection(value = LazyCollectionOption.FALSE)
     @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_subs",
             joinColumns = @JoinColumn(name = "subscription_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
     private List<User> subscribers = new ArrayList<>();
 
-    @LazyCollection(value = LazyCollectionOption.FALSE)
+//    @LazyCollection(value = LazyCollectionOption.FALSE)
     @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_subs",
             joinColumns = @JoinColumn(name = "subscriber_id"),
@@ -55,7 +51,7 @@ public class UserCommunity {
 //    @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
 //    private List<User> userFriends = new ArrayList<>();
 
-    @LazyCollection(value = LazyCollectionOption.FALSE)
+//    @LazyCollection(value = LazyCollectionOption.FALSE)
     @ManyToMany
     @JoinTable(
             name = "user_friends",
@@ -63,13 +59,21 @@ public class UserCommunity {
             inverseJoinColumns = @JoinColumn(name = "incoming_friend_id"))
     private List<User> incomingFriends = new ArrayList<>();
 
-    @LazyCollection(value = LazyCollectionOption.FALSE)
+//    @LazyCollection(value = LazyCollectionOption.FALSE)
     @ManyToMany
     @JoinTable(
             name = "user_friends",
             joinColumns = @JoinColumn(name = "incoming_friend_id"),
             inverseJoinColumns = @JoinColumn(name = "outgoing_friend_id"))
     private List<User> outgoingFriends = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "community_chats",
+            joinColumns = @JoinColumn(name = "community_id"),
+            inverseJoinColumns = @JoinColumn(name = "chat_id")
+    )
+    private Set<Chat> chats = Collections.emptySet();
 
 
     public UserCommunity() {
@@ -89,4 +93,21 @@ public class UserCommunity {
         return Stream.concat(incomingFriends.stream(), outgoingFriends.stream()).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserCommunity that = (UserCommunity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(user, that.user) &&
+                Objects.equals(subscribers, that.subscribers) &&
+                Objects.equals(subscriptions, that.subscriptions) &&
+                Objects.equals(incomingFriends, that.incomingFriends) &&
+                Objects.equals(outgoingFriends, that.outgoingFriends);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user, subscribers, subscriptions, incomingFriends, outgoingFriends);
+    }
 }

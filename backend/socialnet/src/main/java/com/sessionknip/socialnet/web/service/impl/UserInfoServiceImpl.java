@@ -4,7 +4,7 @@ import com.sessionknip.socialnet.web.domain.UserInfo;
 import com.sessionknip.socialnet.web.repository.UserInfoRepo;
 import com.sessionknip.socialnet.web.service.NullAndEmptyChecker;
 import com.sessionknip.socialnet.web.service.UserInfoService;
-import com.sessionknip.socialnet.web.service.exception.UserInfoException;
+import com.sessionknip.socialnet.web.service.exception.UserInfoServiceException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +38,11 @@ public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfo
     }
 
     @Override
-    public UserInfo findByEmail(String email) throws UserInfoException {
+    public UserInfo findByEmail(String email) throws UserInfoServiceException {
         UserInfo info = userInfoRepo.findByEmail(email);
 
         if (info == null) {
-            throw new UserInfoException("No user info with such email exists");
+            throw new UserInfoServiceException("No user info with such email exists");
         }
 
         return info;
@@ -69,20 +69,20 @@ public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfo
     public boolean existsByEmail(String email) {
         try {
             return findByEmail(email) != null;
-        } catch (UserInfoException e) {
+        } catch (UserInfoServiceException e) {
             return false;
         }
     }
 
     @Override
-    public void edit(UserInfo target, UserInfo source) throws UserInfoException {
+    public void edit(UserInfo target, UserInfo source) throws UserInfoServiceException {
         target = editNotSave(target, source);
 
         userInfoRepo.save(target);
     }
 
     @Override
-    public UserInfo editNotSave(UserInfo target, UserInfo source) throws UserInfoException {
+    public UserInfo editNotSave(UserInfo target, UserInfo source) throws UserInfoServiceException {
 
         if (notNullAndNotEmpty(source.getFirstName())) {
             target.setFirstName(source.getFirstName());
@@ -99,7 +99,7 @@ public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfo
         if (notNullAndNotEmpty(source.getEmail())) {
             if (!source.getEmail().equals(target.getEmail())) {
                 if (existsByEmail(source.getEmail())) {
-                    throw new UserInfoException("User info with such email already exists");
+                    throw new UserInfoServiceException("User info with such email already exists");
                 }
             }
             target.setEmail(source.getEmail());

@@ -1,13 +1,12 @@
 package com.sessionknip.socialnet.web.controller;
 
 import com.sessionknip.socialnet.web.domain.Publication;
-import com.sessionknip.socialnet.web.dto.MessageDto;
-import com.sessionknip.socialnet.web.dto.request.NewsRequestDto;
+import com.sessionknip.socialnet.web.dto.InfoMessageDto;
 import com.sessionknip.socialnet.web.dto.request.PublicationRequestDto;
 import com.sessionknip.socialnet.web.dto.response.PublicationResponseDto;
 import com.sessionknip.socialnet.web.security.UserDetailsImpl;
 import com.sessionknip.socialnet.web.service.NullAndEmptyChecker;
-import com.sessionknip.socialnet.web.service.exception.PublicationException;
+import com.sessionknip.socialnet.web.service.exception.PublicationServiceException;
 import com.sessionknip.socialnet.web.service.impl.PublicationServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,7 @@ public class PublicationController extends NullAndEmptyChecker {
     public ResponseEntity<List<PublicationResponseDto>> getNews(
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "howMuch", required = false) Integer howMuch,
-            @RequestParam(name = "filters") String[] filters
+            @RequestParam(name = "filters", required = false) String[] filters
     ) {
         //todo user filters
         List<PublicationResponseDto> news;
@@ -48,25 +47,25 @@ public class PublicationController extends NullAndEmptyChecker {
 
 
     @PostMapping("/makePublication")
-    public ResponseEntity<MessageDto> makePublication(
+    public ResponseEntity<InfoMessageDto> makePublication(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody PublicationRequestDto publicationDto
     ) {
         if (!notNullAndNotEmpty(publicationDto.getTheme()) || !notNullAndNotEmpty(publicationDto.getText())) {
-            return new ResponseEntity<>(new MessageDto("All fields should be filled"), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(new InfoMessageDto("All fields should be filled"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         Publication publication = new Publication(publicationDto.getTheme(), publicationDto.getText(), userDetails.getUser());
 
         try {
             publicationService.makePublication(publication);
-        } catch (PublicationException e) {
+        } catch (PublicationServiceException e) {
             return new ResponseEntity<>(
-                    new MessageDto("Can't make publication. Please, check entered values to see if they match the format"),
+                    new InfoMessageDto("Can't make publication. Please, check entered values to see if they match the format"),
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>(new MessageDto("Your publication successfully posted"), HttpStatus.OK);
+        return new ResponseEntity<>(new InfoMessageDto("Your publication successfully posted"), HttpStatus.OK);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.sessionknip.socialnet.web.security;
 
 import com.sessionknip.socialnet.web.domain.User;
-import com.sessionknip.socialnet.web.service.exception.UserException;
+import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import com.sessionknip.socialnet.web.service.impl.UserServiceImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = null;
         try {
             user = userService.findByUsername(username);
-        } catch (UserException e) {
+        } catch (UserServiceException e) {
             e.printStackTrace();
         }
 

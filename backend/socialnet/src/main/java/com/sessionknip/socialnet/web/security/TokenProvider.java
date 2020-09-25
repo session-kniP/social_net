@@ -70,6 +70,10 @@ public class TokenProvider {
     //get token value from http request
     public String resolveToken(HttpServletRequest request) {
         String tokenValue = request.getHeader("Authorization");
+        return resolveToken(tokenValue);
+    }
+
+    public String resolveToken(String tokenValue) {
         if (tokenValue != null && tokenValue.startsWith("Bearer_")) {
             return tokenValue.substring(7);
         }

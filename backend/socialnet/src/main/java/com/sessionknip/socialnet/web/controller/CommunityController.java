@@ -2,16 +2,15 @@ package com.sessionknip.socialnet.web.controller;
 
 import com.sessionknip.socialnet.web.domain.User;
 import com.sessionknip.socialnet.web.domain.UserInfo;
-import com.sessionknip.socialnet.web.dto.MessageDto;
+import com.sessionknip.socialnet.web.dto.InfoMessageDto;
 import com.sessionknip.socialnet.web.dto.UserDto;
 import com.sessionknip.socialnet.web.dto.request.UserCommunityRequestDto;
-import com.sessionknip.socialnet.web.dto.response.UserCommunityResponseDto;
 import com.sessionknip.socialnet.web.security.UserDetailsImpl;
 import com.sessionknip.socialnet.web.service.UserCommunityService;
 import com.sessionknip.socialnet.web.service.UserInfoService;
 import com.sessionknip.socialnet.web.service.UserService;
-import com.sessionknip.socialnet.web.service.exception.CommunityException;
-import com.sessionknip.socialnet.web.service.exception.UserException;
+import com.sessionknip.socialnet.web.service.exception.CommunityServiceException;
+import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,8 +43,8 @@ public class CommunityController {
             resultDto.setCommunityStatus(userCommunityService.getCommunityStatus(userDetails.getUser(), resultUser));
 
             return new ResponseEntity<>(resultDto, HttpStatus.OK);
-        } catch (UserException e) {
-            return new ResponseEntity<>(new MessageDto("Can't find user with id " + id), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (UserServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto("Can't find user with id " + id), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -116,49 +115,49 @@ public class CommunityController {
     }
 
     @PostMapping("/subscribe")
-    public ResponseEntity<MessageDto> subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserCommunityRequestDto request) {
+    public ResponseEntity<InfoMessageDto> subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserCommunityRequestDto request) {
 
         User candidate;
 
         try {
             candidate = userService.findById(request.getId());
-        } catch (UserException e) {
-            return new ResponseEntity<>(new MessageDto("This user doesn't exists"), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (UserServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto("This user doesn't exists"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         try {
             userCommunityService.addSubscription(userDetails.getUser(), candidate);
-        } catch (CommunityException e) {
-            return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (CommunityServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>(new MessageDto("You successfully subscribed to this user"), HttpStatus.OK);
+        return new ResponseEntity<>(new InfoMessageDto("You successfully subscribed to this user"), HttpStatus.OK);
     }
 
 
     @PostMapping("/unsubscribe")
-    public ResponseEntity<MessageDto> unsubscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserCommunityRequestDto request) {
+    public ResponseEntity<InfoMessageDto> unsubscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserCommunityRequestDto request) {
 
         User candidate;
 
         try {
             candidate = userService.findById(request.getId());
-        } catch (UserException e) {
-            return new ResponseEntity<>(new MessageDto("This user doesn't exists"), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (UserServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto("This user doesn't exists"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         try {
             userCommunityService.removeSubscription(userDetails.getUser(), candidate);
-        } catch (CommunityException e) {
-            return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (CommunityServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>(new MessageDto(String.format("You successfully unsubscribed from %s", candidate)), HttpStatus.OK);
+        return new ResponseEntity<>(new InfoMessageDto(String.format("You successfully unsubscribed from %s", candidate)), HttpStatus.OK);
     }
 
 
     @PostMapping("/acceptFriendRequest")
-    public ResponseEntity<MessageDto> acceptFriendRequest(
+    public ResponseEntity<InfoMessageDto> acceptFriendRequest(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserCommunityRequestDto requestDto
     ) {
@@ -166,22 +165,22 @@ public class CommunityController {
 
         try {
             candidate = userService.findById(requestDto.getId());
-        } catch (UserException e) {
-            return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (UserServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         try {
             userCommunityService.addFriend(userDetails.getUser(), candidate);
-        } catch (CommunityException e) {
-            return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (CommunityServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>(new MessageDto(String.format("%s is now your friend", candidate)), HttpStatus.OK);
+        return new ResponseEntity<>(new InfoMessageDto(String.format("%s is now your friend", candidate)), HttpStatus.OK);
     }
 
 
     @PostMapping("/removeFriend")
-    public ResponseEntity<MessageDto> removeFriend(
+    public ResponseEntity<InfoMessageDto> removeFriend(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserCommunityRequestDto requestDto) {
 
@@ -189,18 +188,18 @@ public class CommunityController {
 
         try {
             candidate = userService.findById(requestDto.getId());
-        } catch (UserException e) {
-            return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (UserServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         try {
             userCommunityService.removeFriend(userDetails.getUser(), candidate);
-        } catch (CommunityException e) {
-            return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (CommunityServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         return new ResponseEntity<>(
-                new MessageDto(
+                new InfoMessageDto(
                         String.format("You successfully removed %s from your friends list", candidate.getUsername())),
                 HttpStatus.OK);
     }
