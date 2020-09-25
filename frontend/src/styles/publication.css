@@ -15,10 +15,6 @@
     display: inline-block;
 }
 
-/* .author-avatar-tn {
-
-} */
-
 .publication-author-date-info {
     width: 80%;
     margin: 1%;
@@ -27,7 +23,7 @@
 
 .publication-author-info {
     font-size: .7rem;
-    text-decoration: none;
+    text-decoration-line: none;
 }
 
 .publication-author-info:hover {

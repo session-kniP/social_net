@@ -38,21 +38,49 @@ const PublicationForm = ({ isOpened, onClose, onSubmit }) => {
     return (
         <React.Fragment>
             {isOpened && (
-                <div className="publication-form">
+                <div className="publication-form col-12 m-0">
                     <h2 className="publication-form-title">What's new?</h2>
-                    <input className="publication-form-theme" ref={themeInput} maxLength="255" placeholder="Theme..." />
-                    <br />
-                    <TextInput ref={textInput} />
-                    <br />
-                    <button className="publication-form-button send" onClick={sendPublication}>
-                        Send
-                    </button>
-                    <br />
-                    <br />
-                    <button className="publication-form-button decline-rotate" onClick={() => onClose()}>
-                        &times;
-                    </button>
-                    <label className="error-msg" ref={errorLabel} hidden={true} />
+                    <div className="row w-100">
+                        <input
+                            className="publication-form-theme col-8 m-2 p-1"
+                            ref={themeInput}
+                            maxLength="255"
+                            placeholder="Theme..."
+                        />
+                        <div className="col-12 m-1 p-1 justify-content-left">
+                            <TextInput ref={textInput} />
+                        </div>
+                    </div>
+
+                    <div className="col-12">
+                        <div className="row justify-content-end p-1 m-1">
+                            <div className="col-2" align="right">
+                                <button
+                                    className="publication-form-button send"
+                                    onClick={sendPublication}
+                                >
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="row justify-content-end p-1 m-1">
+                            <div className="col-2" align="right">
+                                <button
+                                    className="publication-form-button decline-rotate px-2"
+                                    onClick={() => onClose()}
+                                >
+                                    &times;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label
+                        className="error-msg"
+                        ref={errorLabel}
+                        hidden={true}
+                    />
                 </div>
             )}
         </React.Fragment>

@@ -24,13 +24,7 @@ export const AuthorizedNavBar = () => {
                 { title: 'Friends', href: '/friends' },
                 { title: 'Subscribers', href: '/subscribers' },
             ]}
-            additionalComps={[
-                {
-                    className: 'logout',
-                    onClick: logoutHandler,
-                    text: 'Log Out'
-                },
-            ]}
+            authLinks={[{ title: 'Log Out', onClick: logoutHandler }]}
             key={Math.random()}
         />
     );

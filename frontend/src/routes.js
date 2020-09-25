@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { EditProfilePage } from './pages/EditProfilePage';
 import { ChatPage } from './pages/ChatPage';
+import { ErrorPage } from './pages/ErrorPage';
 
 export const useRoutes = (isAuthorized) => {
     if (isAuthorized) {
@@ -39,6 +40,9 @@ export const useRoutes = (isAuthorized) => {
                 <Route exact path="/chat/:id">
                     <ChatPage />
                 </Route>
+                <Route path="/error/:num">
+                    <ErrorPage />
+                </Route>
                 <Redirect to="/profile" />
             </Switch>
         );
@@ -52,9 +56,9 @@ export const useRoutes = (isAuthorized) => {
             <Route exact path="/registration">
                 <RegistrationPage />
             </Route>
-            {/* <Route exact path="/">
-                <HomePage />
-            </Route> */}
+            <Route path="/error/:num">
+                <ErrorPage />
+            </Route>
             <Redirect to="/login" />
         </Switch>
     );

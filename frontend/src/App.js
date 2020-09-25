@@ -8,44 +8,6 @@ import { NotAuthorizedNavBar } from './components/NotAuthorizedNavBar';
 import { NewsContext, UserContext } from './dev/DevContext';
 import { TOKEN_NAME } from './constants/constants';
 
-const publications = [
-    {
-        theme: 'Some theme',
-        text: 'Sample text just to see how far does it goes',
-        date: new Date().getDay() + ':' + new Date().getMonth(),
-        time: new Date().getHours() + ':' + new Date().getMinutes(),
-        author: {
-            id: 1,
-            firstName: 'Max',
-            lastName: 'Chatsky',
-        },
-        authorAvatar: null,
-        images: null,
-    },
-    {
-        theme: 'Some another theme',
-        text:
-            'Sample text just to see how far does it goes. Sample text just to see how far does it goes. Sample text just to see how far does it goes',
-        date: new Date().getDay() + ':' + new Date().getMonth(),
-        time: new Date().getHours() + ':' + new Date().getMinutes(),
-        author: {
-            id: 1,
-            firstName: 'Max',
-            lastName: 'Chatsky',
-        },
-        authorAvatar: null,
-        images: null,
-    },
-];
-
-const user = {
-    id: 1,
-    username: 'Chatsky',
-    firstName: 'Максим',
-    lastName: 'Федько',
-    sex: 'MALE',
-};
-
 export default () => {
     const { isToken, login, logout } = useAuth();
 
@@ -53,18 +15,29 @@ export default () => {
     const routes = useRoutes(authorized);
 
     return (
-        <div>
-            <UserContext.Provider value={user}>
-                <NewsContext.Provider value={publications}>
-                    <AuthContext.Provider value={{ login, logout }}>
-                        <BrowserRouter>
-                            {authorized ? <AuthorizedNavBar /> : <NotAuthorizedNavBar />}
-
-                            {routes && <div className="page-body">{routes}</div>}
-                        </BrowserRouter>
-                    </AuthContext.Provider>
-                </NewsContext.Provider>
-            </UserContext.Provider>
+        <div className="h-100">
+            {/* <UserContext.Provider value={user}> */}
+            {/* <NewsContext.Provider value={publications}> */}
+            <AuthContext.Provider value={{ login, logout }}>
+                <BrowserRouter>
+                    {authorized ? (
+                        <AuthorizedNavBar />
+                    ) : (
+                        <NotAuthorizedNavBar />
+                    )}
+                    <div className="container-fluid w-100 p-1 h-100">
+                        <div className="row justify-content-sm-center flex-wrap w-100 ml-0 h-100">
+                            <div className="col-sm-12 col-md-6 col-lg-5 w-100 px-0 pb-0 h-100">
+                                {routes && (
+                                    <div className="page-body">{routes}</div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </BrowserRouter>
+            </AuthContext.Provider>
+            {/* </NewsContext.Provider> */}
+            {/* </UserContext.Provider> */}
         </div>
     );
 };

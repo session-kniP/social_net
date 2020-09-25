@@ -19,19 +19,28 @@ export const ProfilePage = () => {
 
     const getUser = useCallback(async () => {
         try {
-            const profileRequestUrl = id ? `/api/community/user?id=${id}` : '/profile';
-            const responseData = await httpRequest({ url: profileRequestUrl, method: 'GET' });
+            const profileRequestUrl = id
+                ? `/api/community/user?id=${id}`
+                : '/profile';
+            const responseData = await httpRequest({
+                url: profileRequestUrl,
+                method: 'GET',
+            });
             setUser(responseData);
 
-            const avatarRequestUrl = id ? `/profile/getAvatar?id=${id}` : '/profile/getAvatar';
+            const avatarRequestUrl = id
+                ? `/profile/getAvatar?id=${id}`
+                : '/profile/getAvatar';
             const responseAvatar = await httpRequest({
                 url: avatarRequestUrl,
                 method: 'GET',
                 type: RequestDataType.IMAGE_JPEG,
             });
 
-            setAvatar(URL.createObjectURL(responseAvatar));
-
+            if (responseAvatar.size != 0) {
+                const avatar = URL.createObjectURL(responseAvatar);
+                setAvatar(avatar);
+            } 
         } catch (e) {
             console.log('ERROR', e);
             history.go();
@@ -40,7 +49,6 @@ export const ProfilePage = () => {
 
     useEffect(() => {
         getUser();
-        console.log('AVATAR IS', avatar);
     }, [getUser]);
 
     // const user = useContext(UserContext);

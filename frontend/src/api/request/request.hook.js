@@ -37,7 +37,6 @@ export const useRequest = () => {
 
             return { response: response, httpStatus: httpStatus };
         } catch (e) {
-            setError(e.message);
             throw e;
         } finally {
             setLoading(false);

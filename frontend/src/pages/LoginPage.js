@@ -40,7 +40,7 @@ export default () => {
             history.go();
         } catch (e) {
             clearForm();
-
+            
             console.error(e);
         }
     }

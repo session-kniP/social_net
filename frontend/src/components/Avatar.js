@@ -1,16 +1,15 @@
 import React from 'react';
 import '../styles/profile.css';
 
-const Avatar = ({onModalShow, src}) => {
+const Avatar = ({ onModalShow, src }) => {
+    console.log(src);
     return (
         <a className="imageLink" onClick={onModalShow}>
-            <img
-                tabIndex={0}
+            <div
                 className="avatar"
-                src={src}
-                onErrorCapture={(e) => (e.target.src = '../../resources/images/default.jpg')}
-            />
-            <br />
+                style={{ backgroundImage: `url(${src})`}}
+            >
+            </div>
         </a>
     );
 };

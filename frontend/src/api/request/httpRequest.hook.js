@@ -5,13 +5,21 @@ import { TOKEN_NAME } from '../../constants/constants';
 
 import HttpStatus from 'http-status-codes';
 import { RequestDataType } from './RequestDataType';
+import { useHistory } from 'react-router-dom';
 
 export const useHttpRequest = () => {
     const { request } = useRequest();
     const { logout } = useContext(AuthContext);
+    const history = useHistory();
 
     const httpRequest = useCallback(
-        async ({ url, method = 'GET', headers = {}, body = null, type = RequestDataType.JSON }) => {
+        async ({
+            url,
+            method = 'GET',
+            headers = {},
+            body = null,
+            type = RequestDataType.JSON,
+        }) => {
             try {
                 const token = localStorage.getItem(TOKEN_NAME);
 
@@ -19,7 +27,13 @@ export const useHttpRequest = () => {
                     headers['Authorization'] = 'Bearer_' + token;
                 }
 
-                const { response, httpStatus } = await request({ url, method, headers, body, type });
+                const { response, httpStatus } = await request({
+                    url,
+                    method,
+                    headers,
+                    body,
+                    type,
+                });
 
                 if (httpStatus === HttpStatus.UNPROCESSABLE_ENTITY) {
                     throw new Error(response.message);
@@ -39,9 +53,13 @@ export const useHttpRequest = () => {
                     throw new Error('Server error. Please, try again later');
                 }
 
-                return type === RequestDataType.IMAGE_JPEG ? response.blob() : response;
+                return type === RequestDataType.IMAGE_JPEG
+                    ? response.blob()
+                    : response;
             } catch (e) {
                 logout();
+                history.push('/error/503');     //todo replace 503, make 'Ooops' error
+
                 throw new Error(e.message);
             }
         },

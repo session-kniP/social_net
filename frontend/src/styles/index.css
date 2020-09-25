@@ -1,3 +1,7 @@
+:root {
+    --bgcolor: #383838;
+}
+
 header {
     height: 0;
 }
@@ -15,15 +19,28 @@ body {
     margin: 0%;
 }
 
+html, body {
+    height: 100%;
+}
+
+a:hover {
+    color: inherit;
+}
+
+.app {
+    height: 94%;
+}
+
 .content-block-main {
-    width: 50%;
-    margin: 0 auto;
+    width: 100%;
+    height: calc(100% - 65px);
+    
 }
 
 .page-body {
-    padding: 0.5%;
     margin-top: 0;
     position: relative;
+    height: calc(100% - 65px);
 }
 
 ::selection {
@@ -35,5 +52,33 @@ body {
 }
 
 .success-msg {
-    color: rgb(69, 170, 100)
+    color: rgb(69, 170, 100);
+}
+
+@media (min-width: 0px) {
+    .datetime {
+        font-size: 0.5rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .datetime {
+        font-size: 0.7rem;
+    }
+}
+
+.datetime {
+    color: inherit;
+    filter: invert(100%)
+}
+
+textarea::-webkit-scrollbar {
+    width: 8px;
+    background-color: var(--bgcolor);
+}
+
+textarea::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #8a5377;
 }

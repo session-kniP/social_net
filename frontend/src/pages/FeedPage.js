@@ -70,7 +70,7 @@ export const FeedPage = () => {
                     )}
                     <PublicationForm isOpened={isOpened} onClose={closeForm} onSubmit={makePublicaion} />
                 </div>
-                <div className="content-block-publications">
+                <div className="content-block-publications col-12">
                     {publications &&
                         publications.map((p) => {
                             return <Publication props={p} key={Math.random()} />;

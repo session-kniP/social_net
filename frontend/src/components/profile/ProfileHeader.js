@@ -7,7 +7,15 @@ import { useHttpRequest } from '../../api/request/httpRequest.hook';
 
 const communityUrl = '/api/community';
 
-const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAvatar, avatar, editable }) => {
+const ProfileHeader = ({
+    user,
+    isModalShow,
+    onModalShow,
+    onModalClose,
+    onLoadAvatar,
+    avatar,
+    editable,
+}) => {
     const [isInfoOpened, setIsInfoOpened] = useState(false);
 
     const { httpRequest } = useHttpRequest();
@@ -28,13 +36,21 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
 
     const subscribeHandler = async (e) => {
         e.preventDefault();
-        const response = await httpRequest({ url: communityUrl + '/subscribe', method: 'POST', body: { id: user.id } });
+        const response = await httpRequest({
+            url: communityUrl + '/subscribe',
+            method: 'POST',
+            body: { id: user.id },
+        });
         history.go();
     };
 
     const unsubscribeHandler = async (e) => {
         e.preventDefault();
-        const response = await httpRequest({ url: communityUrl + '/unsubscribe', method: 'POST', body: { id: user.id } });
+        const response = await httpRequest({
+            url: communityUrl + '/unsubscribe',
+            method: 'POST',
+            body: { id: user.id },
+        });
         history.go();
     };
 
@@ -63,8 +79,13 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
             case UserCommunityStatus.SUBSCRIPTION:
                 return (
                     <div>
-                        <label className="user-community-status">You subscribed to this user</label>
-                        <a className="link unsubscribe" onClick={unsubscribeHandler}>
+                        <label className="user-community-status">
+                            You subscribed to this user
+                        </label>
+                        <a
+                            className="link unsubscribe"
+                            onClick={unsubscribeHandler}
+                        >
                             Unsubscribe
                         </a>
                     </div>
@@ -73,8 +94,13 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
             case UserCommunityStatus.SUBSCRIBER:
                 return (
                     <div>
-                        <label className="user-community-status">This user subscribed to you</label>
-                        <a className="link accept-friend-request" onClick={acceptFriendRequestHandler}>
+                        <label className="user-community-status">
+                            This user subscribed to you
+                        </label>
+                        <a
+                            className="link accept-friend-request"
+                            onClick={acceptFriendRequestHandler}
+                        >
                             Accept friend request
                         </a>
                     </div>
@@ -83,8 +109,13 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
             case UserCommunityStatus.FRIEND:
                 return (
                     <div>
-                        <label className="user-community-status">This user is your friend</label>
-                        <a className="link remove-friend" onClick={removeFriendHandler}>
+                        <label className="user-community-status">
+                            This user is your friend
+                        </label>
+                        <a
+                            className="link remove-friend"
+                            onClick={removeFriendHandler}
+                        >
                             Remove friend
                         </a>
                     </div>
@@ -102,67 +133,110 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
     };
 
     return (
-        <div className="profile-wrapper">
-            <div className="profile-user-image-panel">
-                {avatar && <Avatar onModalShow={onModalShow} src={avatar} />}
+        <div className="container mx-0 px-0">
+            <div className="row justify-content-center min-vw-50 w-100 m-0">
+                <div className="col-4 col-xl-3 px-2 py-2 profile-user-image-panel">
+                    <Avatar
+                        onModalShow={onModalShow}
+                        src={
+                            avatar
+                                ? avatar
+                                : `../../../resources/images/default.jpg`
+                        }
+                    />
 
-                <Modal
-                    isOpened={isModalShow}
-                    onClose={onModalClose}
-                    children={
-                        <img
-                            className="modal-image"
-                            src={avatar ? avatar : '../../resources/images/default.jpg'}
-                            onErrorCapture={(e) => (e.target.src = '../../resources/images/default.jpg')}
-                        />
-                    }
-                />
+                    <Modal
+                        isOpened={isModalShow}
+                        onClose={onModalClose}
+                        children={
+                            <img
+                                className="modal-image"
+                                src={
+                                    avatar
+                                        ? avatar
+                                        : '../../resources/images/default.jpg'
+                                }
+                                onErrorCapture={(e) =>
+                                    (e.target.src =
+                                        '../../resources/images/default.jpg')
+                                }
+                            />
+                        }
+                    />
 
-                {editable ? (
-                    <div>
-                        <input id="avatar-loader" type="file" onChange={fileLoadedHandler} hidden={true}></input>
-                        <a className="link upload-new-avatar">
-                            <label htmlFor="avatar-loader">Upload new avatar</label>
-                        </a>
-                        <a className="link edit-profile" href="/editProfile">
-                            Edit profile
-                        </a>
-                    </div>
-                ) : (
-                    switchLinkByStatus(user.communityStatus)
-                )}
-            </div>
-            <div className="profile-user-info-panel">
-                <div className="profile-name-view">
-                    {user.userInfo.firstName != null && user.userInfo.lastName != null && (
-                        <>
-                            <label className="profile-full-name">
-                                {user.userInfo.firstName + ' ' + user.userInfo.lastName}
-                            </label>
-                            <br />
-                        </>
+                    {editable ? (
+                        <div>
+                            <input
+                                id="avatar-loader"
+                                type="file"
+                                onChange={fileLoadedHandler}
+                                hidden={true}
+                            ></input>
+                            <a className="link upload-new-avatar my-2 text-center">
+                                <label
+                                    htmlFor="avatar-loader"
+                                    className="my-0 mx-0"
+                                >
+                                    Upload new avatar
+                                </label>
+                            </a>
+                            <a
+                                className="link edit-profile my-2 text-center"
+                                href="/editProfile"
+                            >
+                                Edit profile
+                            </a>
+                        </div>
+                    ) : (
+                        switchLinkByStatus(user.communityStatus)
                     )}
-
-                    <label className="profile-username">{user.username}</label>
                 </div>
+                <div className="col-8 mx-0 px-1 px-md-3">
+                    <div className="profile-name-view">
+                        {user.userInfo.firstName != null &&
+                            user.userInfo.lastName != null && (
+                                <>
+                                    <label className="profile-full-name">
+                                        {user.userInfo.firstName +
+                                            ' ' +
+                                            user.userInfo.lastName}
+                                    </label>
+                                    <br />
+                                </>
+                            )}
 
-                {isInfoOpened ? (
-                    <div>
-                        <label onClick={infoClosingHandler} className="profile-additional-info-control opened">
-                            Hide additional info
-                        </label>
-                        <AdditionalInfo
-                            baseClass="profile"
-                            info={{ email: user.userInfo.email, sex: user.userInfo.sex }}
-                        />
-                    </div>
-                ) : (
-                    <div>
-                        <label onClick={infoOpeningHandler} className="profile-additional-info-control closed">
-                            Show additional info
+                        <label className="profile-username">
+                            {user.username}
                         </label>
                     </div>
-                )}
+
+                    {isInfoOpened ? (
+                        <div>
+                            <label
+                                onClick={infoClosingHandler}
+                                className="profile-additional-info-control opened"
+                            >
+                                Hide additional info
+                            </label>
+                            <AdditionalInfo
+                                baseClass="profile"
+                                info={{
+                                    email: user.userInfo.email,
+                                    sex: user.userInfo.sex,
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <div>
+                            <label
+                                onClick={infoOpeningHandler}
+                                className="profile-additional-info-control closed"
+                            >
+                                Show additional info
+                            </label>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

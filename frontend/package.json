@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --host 192.168.1.36 --mode development --open --hot",
+    "start": "webpack-dev-server --host 192.168.1.51 --mode development --open --hot",
     "build": "webpack --mode production"
   },
   "historyApiFallback": true,
@@ -22,13 +22,17 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "@popperjs/core": "^2.4.4",
     "@stomp/stompjs": "^5.4.4",
+    "bootstrap": "^4.5.2",
     "config": "^3.3.1",
     "css-loader": "^3.6.0",
     "fs": "0.0.1-security",
     "html-webpack-plugin": "^4.3.0",
     "http-proxy-middleware": "^1.0.5",
     "http-status-codes": "^1.4.0",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

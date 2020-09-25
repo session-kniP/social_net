@@ -2,7 +2,22 @@
     --bgcolor: #222222;
 }
 
-.chat-form {
+.chat {
+    background-color: var(--bgcolor);
+    overflow-y: auto;
     height: 100%;
+    width: 95%;
+    margin-left: 2%;    
+}
+
+.chat-form {
+    width: 100%;
+    background-color: #111111;
+    position: relative;
+    bottom: 0;
+    top: auto;
+}
+
+.chat-block {
     background-color: var(--bgcolor);
 }

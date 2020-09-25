@@ -1,0 +1,7 @@
+{
+    "workbench.tree.indent": 24,
+    "workbench.tree.renderIndentGuides": "always",
+    "prettier.singleQuote": true,
+    "prettier.tabWidth": 4,
+    "editor.useTabStops": false
+}

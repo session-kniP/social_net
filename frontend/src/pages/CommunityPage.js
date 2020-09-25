@@ -31,6 +31,7 @@ export const CommunityPage = ({ mode = CommunityPageMode.FRIENDS }) => {
                 url: `${communityMapping}/${mode.toLowerCase()}?page=${page}&howMuch=${howMuch}&filters=${filters}`,
                 method: 'GET',
             });
+            console.log(response);
 
             setElements(response);
         } catch (e) {
