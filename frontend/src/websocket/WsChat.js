@@ -1,16 +1,15 @@
 import React from 'react';
-import { WS_CHAT, WS_CHAT_SUBSCRIPTION } from '../../constants/mappings';
+import { WS_CHAT, WS_CHAT_SUBSCRIPTION } from '../constants/mappings';
 import 'regenerator-runtime/runtime';
-import { WsSubscription } from './wsSubscription.hook';
-import { COMMUNITY_CHAT } from '../../constants/mappings';
-import { useHttpRequest } from '../../api/request/httpRequest.hook';
+import { WsSubscription } from './WsSubscription';
+import { COMMUNITY_CHAT } from '../constants/mappings';
+import { ChatType } from '../components/chat/ChatType';
+import { ChainException } from '../exception/ChainException';
 
 export class WsChat extends React.Component {
-    constructor(chatId, chatCallback, source) {
-
+    constructor(chatType, chatCallback, source) {
         super();
-        const subscription = WS_CHAT_SUBSCRIPTION + '/' + chatId;
-        
+
         this.onConnected = this.onConnected.bind(this);
         this.connectChat = this.connectChat.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
@@ -18,23 +17,31 @@ export class WsChat extends React.Component {
 
         this.state = {
             client: null,
-            chatId: chatId,
+            chatId: null,
+            chatType: chatType,
             chatCallback: chatCallback,
             source: source,
-            subscription: subscription,
-            wsSubscription: new WsSubscription(subscription)
-        }
-
-
+            subscription: null,
+            wsSubscription: null,
+        };
     }
-    //props: chatId
 
     messageCallback(body) {
         console.log('MESSAGE CALLBACK', body);
     }
 
-    connectChat() {
-        this.state.wsSubscription.connect(this.onConnected, this.onError);
+    connectChat(id) {
+        const subscription = WS_CHAT_SUBSCRIPTION + '/' + id;
+        const wsSubscription = new WsSubscription(subscription);
+
+        wsSubscription.connect(this.onConnected, this.onError);
+
+        const newState = this.state;
+        newState.chatId = id;
+        newState.subscription = subscription;
+        newState.wsSubscription = wsSubscription;
+
+        this.setState(newState);
     }
 
     onConnected(client) {
@@ -43,13 +50,9 @@ export class WsChat extends React.Component {
             const newState = this.state;
             newState.client = client;
             this.setState(newState);
-            // this.client = client;
-            // this.setState(newState);
-            // stateCallback(newState);
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
-        
     }
 
     onDisconnected(client) {}
@@ -64,7 +67,7 @@ export class WsChat extends React.Component {
     sendMessage(message) {
         try {
             this.state.client.send(
-                WS_CHAT + '/' + this.state.chatId + '/sendMessage',
+                `${WS_CHAT}/${this.state.chatId}/sendMessage`,
                 {},
                 JSON.stringify({ text: message })
             );
@@ -75,16 +78,30 @@ export class WsChat extends React.Component {
         // super.state.client.send(WS_CHAT + '/' + this.props.chatId, {}, JSON.stringify(message));
     }
 
-    async loadChat(page, howMuch) {
+    async getChatId(interlocutorId) {
+        try {
+            const chat = await this.state.source.call({
+                url: `${COMMUNITY_CHAT}/getPrivateId?interlocutorId=${interlocutorId}`,
+                method: 'GET',
+            });
+
+            return chat;
+        } catch (e) {
+            throw new ChainException({message: "Can't get chat id", cause: e});
+        }
+    }
+
+    async loadChat(id, page, howMuch) {
         page = page || 0;
         howMuch = howMuch || 20;
 
         try {
             const chat = await this.state.source.call({
-                url: `${COMMUNITY_CHAT}/${this.state.chatId}?page=${page}&howMuch=${howMuch}`,
+                url: `${COMMUNITY_CHAT}/${id}?page=${page}&howMuch=${howMuch}`,
                 method: 'GET',
             });
 
+            console.log(chat);
             return chat;
         } catch (e) {
             //todo Write message to html

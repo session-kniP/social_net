@@ -6,6 +6,7 @@ import { TOKEN_NAME } from '../../constants/constants';
 import HttpStatus from 'http-status-codes';
 import { RequestDataType } from './RequestDataType';
 import { useHistory } from 'react-router-dom';
+import { ChainException } from '../../exception/ChainException';
 
 export const useHttpRequest = () => {
     const { request } = useRequest();
@@ -27,7 +28,7 @@ export const useHttpRequest = () => {
                     headers['Authorization'] = 'Bearer_' + token;
                 }
 
-                const { response, httpStatus } = await request({
+                const response = await request({
                     url,
                     method,
                     headers,
@@ -35,32 +36,26 @@ export const useHttpRequest = () => {
                     type,
                 });
 
-                if (httpStatus === HttpStatus.UNPROCESSABLE_ENTITY) {
-                    throw new Error(response.message);
-                }
-
-                if (httpStatus === HttpStatus.FORBIDDEN) {
-                    if (!localStorage.getItem(TOKEN_NAME)) {
-                        logout();
-                        history.go();
-                    }
-                    throw new Error(response.message);
-                }
-
-                if (httpStatus === HttpStatus.INTERNAL_SERVER_ERROR) {
-                    logout();
-                    history.go();
-                    throw new Error('Server error. Please, try again later');
-                }
-
                 return type === RequestDataType.IMAGE_JPEG
                     ? response.blob()
                     : response;
             } catch (e) {
-                logout();
-                history.push('/error/503');     //todo replace 503, make 'Ooops' error
+                if(!e.code) {
+                    logout();
+                    throw new ChainException({ message: e.message, cause: e });
+                }
 
-                throw new Error(e.message);
+                if (
+                    e.code === HttpStatus.FORBIDDEN ||
+                    e.code === HttpStatus.INTERNAL_SERVER_ERROR ||
+                    !e.code 
+                ) {
+                    console.log('net');
+                    logout();
+                    history.go();
+                }
+
+                throw new ChainException({ message: e.cause.message, cause: e });
             }
         },
         []

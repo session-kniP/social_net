@@ -80,8 +80,13 @@ public class UserCommunityServiceImpl implements UserCommunityService {
             throw new CommunityServiceException("You can't subscribe to yourself");
         }
 
-        if (communityRepo.findSubscribersByUserId(user.getId()).contains(subscription)) {
+        if (communityRepo.findSubscribersByUserId(subscription.getId()).contains(user)) {
             throw new CommunityServiceException("You are already subscribed to this user");
+        }
+
+        if (communityRepo.findSubscribersByUserId(user.getId()).contains(subscription)) {
+            addFriend(user, subscription);
+            return;
         }
 
         if (getFriends(user).contains(subscription)) {
@@ -94,11 +99,11 @@ public class UserCommunityServiceImpl implements UserCommunityService {
     @Override
     @Transactional
     public void removeSubscription(User user, User subscription) throws CommunityServiceException {
-        if (!communityRepo.findSubscribersByUserId(user.getId()).contains(subscription)) {
+        if (!communityRepo.findSubscriptionsByUserId(user.getId()).contains(subscription)) {
             throw new CommunityServiceException("You don't subscribed to this user");
         }
 
-        communityRepo.removeSubscriptionById(subscription.getId());
+        communityRepo.removeSubscriptionById(subscription.getId(), user.getId());
     }
 
     @Override
@@ -112,7 +117,7 @@ public class UserCommunityServiceImpl implements UserCommunityService {
             throw new CommunityServiceException("This user is already in your friends list");
         }
 
-        communityRepo.removeSubscriberById(friend.getId());
+        communityRepo.removeSubscriberById(friend.getId(), user.getId());
         communityRepo.addFriend(user.getId(), friend.getId());
     }
 
@@ -123,10 +128,10 @@ public class UserCommunityServiceImpl implements UserCommunityService {
             throw new CommunityServiceException("This user is not in your friends list");
         }
 
-        communityRepo.removeIncomingFriendById(friend.getId());
-        communityRepo.removeOutgoingFriendById(friend.getId());
+        communityRepo.removeIncomingFriendById(friend.getId(), user.getId());
+        communityRepo.removeOutgoingFriendById(friend.getId(), user.getId());
 
-        user.getUserCommunity().getSubscribers().add(friend);
+        addSubscription(friend, user);
 
         userService.update(user);
     }
@@ -144,7 +149,7 @@ public class UserCommunityServiceImpl implements UserCommunityService {
             return UserCommunityStatus.SUBSCRIBER;
         }
 
-        if (forWho.getUserCommunity().getUserFriends().contains(who)) {
+        if (getFriends(forWho).contains(who)) {
             return UserCommunityStatus.FRIEND;
         }
 

@@ -3,10 +3,13 @@ import { useParams } from 'react-router-dom';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import { UserContext } from '../dev/DevContext';
 import { useHttpRequest } from '../api/request/httpRequest.hook';
-import { RequestDataType } from '../api/request/RequestDataType';
+import $ from 'jquery';
 
-import '../styles/index.css';
-import '../styles/profile.css';
+import '../styles/index.scss';
+import '../styles/profile.scss';
+import { useAvatar } from '../hooks/avatar.hook';
+import { M_COMMUNITY, M_PROFILE } from '../constants/mappings';
+import { useCommunity } from '../hooks/community.hook';
 
 export const ProfilePage = () => {
     const id = useParams().id;
@@ -17,11 +20,15 @@ export const ProfilePage = () => {
     const [avatar, setAvatar] = useState(null);
     const { httpRequest } = useHttpRequest();
 
+    const { getImageLink, loadAvatar, getAvatar } = useAvatar();
+
+    const toastRef = React.createRef();
+
     const getUser = useCallback(async () => {
         try {
             const profileRequestUrl = id
-                ? `/api/community/user?id=${id}`
-                : '/profile';
+                ? `${M_COMMUNITY}/user?id=${id}`
+                : `${M_PROFILE}`;
             const responseData = await httpRequest({
                 url: profileRequestUrl,
                 method: 'GET',
@@ -29,21 +36,18 @@ export const ProfilePage = () => {
             setUser(responseData);
 
             const avatarRequestUrl = id
-                ? `/profile/getAvatar?id=${id}`
-                : '/profile/getAvatar';
-            const responseAvatar = await httpRequest({
-                url: avatarRequestUrl,
-                method: 'GET',
-                type: RequestDataType.IMAGE_JPEG,
-            });
+                ? `${M_PROFILE}/getAvatar?id=${id}`
+                : `${M_PROFILE}/getAvatar`;
+
+            const responseAvatar = await getAvatar(avatarRequestUrl);
 
             if (responseAvatar.size != 0) {
                 const avatar = URL.createObjectURL(responseAvatar);
                 setAvatar(avatar);
-            } 
+            }
         } catch (e) {
             console.log('ERROR', e);
-            history.go();
+            // history.go();
         }
     }, []);
 
@@ -56,37 +60,9 @@ export const ProfilePage = () => {
         return e.target.parentElement;
     };
 
-    const getImageLink = (a) => {
-        const image = a.childNodes.item('avatar');
-        if (image) {
-            return image.src;
-        }
-        return null;
-    };
-
-    const onLoadAvatar = async (avatar) => {
-        const formData = new FormData();
-
-        formData.append('avatar', avatar);
-        formData.append('title', 'Some Image Title Tho');
-
-        try {
-            const response = await httpRequest({
-                url: '/profile/loadAvatar',
-                method: 'POST',
-                body: formData,
-                type: RequestDataType.FORM_DATA,
-            });
-
-            history.go();
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
     const showModal = (e) => {
         const parent = getParent(e);
-        const link = getImageLink(parent);
+        const link = getImageLink(parent, 'avatar');
         setModalShow(true);
         setAvatarLink(link);
     };
@@ -96,7 +72,7 @@ export const ProfilePage = () => {
     };
 
     return (
-        <div className="content-block-main">
+        <div className="content-block-main col-12 p-0 m-auto">
             {id
                 ? user && (
                       <ProfileHeader
@@ -104,7 +80,7 @@ export const ProfilePage = () => {
                           isModalShow={modalShow}
                           onModalShow={showModal}
                           onModalClose={closeModal}
-                          onLoadAvatar={onLoadAvatar}
+                          onLoadAvatar={loadAvatar}
                           avatar={avatar}
                           editable={false}
                       />
@@ -115,7 +91,7 @@ export const ProfilePage = () => {
                           isModalShow={modalShow}
                           onModalShow={showModal}
                           onModalClose={closeModal}
-                          onLoadAvatar={onLoadAvatar}
+                          onLoadAvatar={loadAvatar}
                           avatar={avatar}
                           editable={true}
                       />

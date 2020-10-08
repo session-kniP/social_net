@@ -1,21 +1,22 @@
 import { useHttpRequest } from '../api/request/httpRequest.hook';
-
-const communityMapping = '/api/community';
+import { M_COMMUNITY } from '../constants/mappings';
+import { ChainException } from '../exception/ChainException';
 
 export const useCommunity = () => {
     const { httpRequest } = useHttpRequest();
 
     const communityRequest = async (mapping, id) => {
+        console.log(M_COMMUNITY)
         try {
             const response = await httpRequest({
-                url: `${communityMapping}/${mapping}`,
+                url: `${M_COMMUNITY}/${mapping}`,
                 method: 'POST',
                 body: { id: id },
             });
 
             return response;
         } catch (e) {
-            throw new Error("Can't execute community request request", e);
+            throw new ChainException({message: "Can't execute community request", cause: e});
         }
     };
 
@@ -25,17 +26,18 @@ export const useCommunity = () => {
 
             return response;
         } catch (e) {
-            throw new Error("Can't subscribe", e);
+            throw new ChainException({message: "Can't subscribe", cause: e});
         }
     };
 
     const unsubscribe = (id) => {
         try {
+            console.log('UNSUBSCRIPTION')
             const response = communityRequest('unsubscribe', id);
 
             return response;
         } catch (e) {
-            throw new Error("Can't unsubscribe", e);
+            throw new ChainException({message: "Can't unsubscribe", cause: e});
         }
     };
 
@@ -45,7 +47,7 @@ export const useCommunity = () => {
 
             return response;
         } catch (e) {
-            throw new Error("Can't accept friend request", e);
+            throw new ChainException({message: "Can't accept friend request", cause: e});
         }
     };
 
@@ -55,7 +57,7 @@ export const useCommunity = () => {
 
             return response;
         } catch (e) {
-            throw new Error("Can't remove a friend", e);
+            throw new ChainException({message: "Can't remove a friend", cause: e});
         }
     };
 

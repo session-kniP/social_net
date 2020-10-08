@@ -11,23 +11,36 @@ export const ChatMessage = React.forwardRef((props, ref) => {
 
     return (
         <div className="container align-self-end my-1" ref={ref}>
-            <div className={`row ${isOwner ? 'justify-content-start' : 'justify-content-end'}`}>
-                <div className={`col-8 col-md-4 ${isOwner ? 'text-left' : 'text-right'}`}>
+            <div
+                className={`row ${
+                    isOwner ? 'justify-content-start' : 'justify-content-end'
+                }`}
+            >
+                <div
+                    className={`col-8 col-md-4 ${
+                        isOwner ? 'text-left' : 'text-right'
+                    }`}
+                >
                     {firstName && lastName
                         ? `${firstName} ${lastName}`
                         : { username }}
                 </div>
             </div>
-            <div className={`row ${isOwner ? 'justify-content-start' : 'justify-content-end'}`}>
+            <div
+                className={`row ${
+                    isOwner ? 'justify-content-start' : 'justify-content-end'
+                }`}
+            >
                 <div
                     className={
-                        'col-auto  border rounded-lg ' +
+                        'col-auto chat-message border rounded-lg ' +
                         (isOwner ? 'bg-info' : 'bg-secondary')
                     }
-                    style={{ maxWidth: '70%' }}
                 >
                     <div className="row">
-                        <div className="col-auto">{message.text}</div>
+                        <div className="col-auto" style={{ lineHeight: 1.1 }}>
+                            <span>{message.text}</span>
+                        </div>
                         <div className="col-1"></div>
                     </div>
 

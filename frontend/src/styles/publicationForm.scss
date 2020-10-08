@@ -27,6 +27,7 @@
 
 .publication-form-text {
     max-height: 15rem;
+    /* height: 100%; */
     background-color: var(--bgcolor-form);
     outline: none;
     border: none;
@@ -67,7 +68,7 @@
 }
 
 .decline {
-    float: right;
+    // float: right;
 }  
 
 

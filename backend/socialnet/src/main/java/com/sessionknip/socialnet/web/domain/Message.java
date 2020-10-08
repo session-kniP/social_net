@@ -23,6 +23,7 @@ public class Message {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     private User owner;
 
+    @Column(length = 3000)
     private String text;
 
     @Column(name = "m_date")

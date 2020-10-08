@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { REMOTE, TOKEN_NAME } from '../../constants/constants';
-import { WS_SERVER } from '../../constants/mappings';
+import { REMOTE, TOKEN_NAME } from '../constants/constants';
+import { WS_SERVER } from '../constants/mappings';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import 'regenerator-runtime/runtime';

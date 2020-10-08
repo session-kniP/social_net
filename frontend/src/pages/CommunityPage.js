@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import '../styles/index.css';
-import '../styles/community.css';
-import '../styles/profile.css';
+import '../styles/index.scss';
+import '../styles/community.scss';
+import '../styles/profile.scss';
 import { useTimer } from '../hooks/timer.hook';
 import { useHttpRequest } from '../api/request/httpRequest.hook';
 import { CommunityElement } from '../components/community/CommunityElement';
+import {M_COMMUNITY} from '../constants/mappings';
 
 export const CommunityPageMode = Object.freeze({
     SUBSCRIPTIONS: 'Subscriptions',
@@ -14,8 +15,6 @@ export const CommunityPageMode = Object.freeze({
 });
 
 export const CommunityPage = ({ mode = CommunityPageMode.FRIENDS }) => {
-    const communityMapping = '/api/community';
-
     const filterRef = React.createRef();
 
     const [elements, setElements] = useState(null);
@@ -28,7 +27,7 @@ export const CommunityPage = ({ mode = CommunityPageMode.FRIENDS }) => {
             filters = filters || [];
 
             const response = await httpRequest({
-                url: `${communityMapping}/${mode.toLowerCase()}?page=${page}&howMuch=${howMuch}&filters=${filters}`,
+                url: `${M_COMMUNITY}/${mode.toLowerCase()}?page=${page}&howMuch=${howMuch}&filters=${filters}`,
                 method: 'GET',
             });
             console.log(response);
@@ -80,7 +79,7 @@ export const CommunityPage = ({ mode = CommunityPageMode.FRIENDS }) => {
     };
 
     return (
-        <div className="content-block-main community">
+        <div className="content-block-main col-12 col-md-8 mx-auto p-0 community">
             {!elements || elements.length == 0 ? (
                 <div className="no-community-block">
                     <h3 className="no-community-msg">{`No ${mode.toLowerCase()} yet`}</h3>

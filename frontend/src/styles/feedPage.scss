@@ -1,0 +1,33 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.feed-open-form-btn {
+    cursor: pointer;
+    margin: 1rem;
+    background-color: var(--bgcolor);
+    color: whitesmoke;
+    font-weight: 600;
+    padding: 0.1rem 1rem 0.1rem;
+    border-radius: 5px;
+    border: 3px solid black;
+    transition: 0.4s;
+}
+
+@include media-breakpoint-up(sm) {
+    .feed-open-form-btn {
+        font-size: 1.2rem;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .feed-open-form-btn {
+        font-size: 1rem;
+    }
+}
+
+.feed-open-form-btn:hover {
+    background-color: rgb(69, 69, 128);
+    color: black;
+    transition: 0.4s;
+}

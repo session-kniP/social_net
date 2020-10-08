@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping(value = "/api/publications")
-public class PublicationController extends NullAndEmptyChecker {
+@RequestMapping(value = "/api/v1/publications")
+public class PublicationsController extends NullAndEmptyChecker {
 
     private final PublicationServiceImpl publicationService;
 
-    public PublicationController(PublicationServiceImpl publicationService) {
+    public PublicationsController(PublicationServiceImpl publicationService) {
         this.publicationService = publicationService;
     }
 

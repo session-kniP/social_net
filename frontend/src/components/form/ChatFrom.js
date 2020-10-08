@@ -6,7 +6,7 @@ export const ChatForm = React.forwardRef((props, ref) => {
         <div className="container p-0">
             <div className="d-flex justify-content-center">
                 <div className="col-11">
-                    <TextInput ref={ref} />
+                    <TextInput ref={ref} callback={props.formCallback} />
                     <button
                         className="publication-form-button accept"
                         onClick={props.sendBtnHandler}

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/publication.css';
+import '../styles/publication.scss';
 
 //{ theme, text, date, time, author, authorAvatar, images }
 export const Publication = ({ props }) => {
@@ -13,12 +13,12 @@ export const Publication = ({ props }) => {
                     <a className="publication-author-info" href={`/profile/${props.author.id}`}>
                         {props.author.userInfo.firstName + ' ' + props.author.userInfo.lastName}
                     </a><br/>
-                    <label className="publication-date-info">{props.date + ' | ' + props.time}</label>
+                    <label className="datetime">{props.date + ' | ' + props.time}</label>
                 </div>
             </div>
             <div className="publication-content">
-                <label className="publication-theme">{props.theme}</label><br/>
-                <label className="publication-text" contentEditable={false}  >{props.text}</label>
+                <label className="publication-theme m-0 p-1">{props.theme}</label><br/>
+                <label className="publication-text m-0" contentEditable={false}  >{props.text}</label>
             </div>
         </div>
     );

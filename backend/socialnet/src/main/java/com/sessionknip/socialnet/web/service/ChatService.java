@@ -12,8 +12,8 @@ public interface ChatService {
 
     List<Chat> findByUserCommunity(UserCommunity user, Integer page, Integer howMuch);
     Chat findById(Long id) throws ChatServiceException;
-    Chat findPrivateByUserCommunities(UserCommunity first, UserCommunity second, Integer page, Integer howMuch) throws ChatServiceException;
-    void createChat(Chat chat) throws ChatServiceException;
+    Chat findPrivateByUserCommunities(UserCommunity first, UserCommunity second) throws ChatServiceException;
+    Chat createChat(Chat chat) throws ChatServiceException;
     void edit(Chat target, Chat source) throws ChatServiceException;
     void remove(Chat chat);
 

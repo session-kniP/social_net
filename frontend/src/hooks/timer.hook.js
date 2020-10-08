@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const useTimer = () => {
-
     let delayTimer;
 
     const onTimeIsOver = (callback, millis) => {
@@ -10,7 +9,7 @@ export const useTimer = () => {
         delayTimer = setTimeout(() => {
             callback();
         }, millis);
-    }
+    };
 
-    return {onTimeIsOver};
-}
+    return { onTimeIsOver };
+};

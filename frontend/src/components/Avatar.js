@@ -1,8 +1,7 @@
 import React from 'react';
-import '../styles/profile.css';
+import '../styles/profile.scss';
 
 const Avatar = ({ onModalShow, src }) => {
-    console.log(src);
     return (
         <a className="imageLink" onClick={onModalShow}>
             <div

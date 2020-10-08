@@ -1,0 +1,175 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+:root {
+    --bgcolor: #222222;
+}
+
+.community {
+    border: 1px solid wheat;
+}
+
+.no-community-msg {
+    text-align: center;
+    width: 100%;
+}
+
+.community-element {
+    margin: 1%;
+    padding: 1%;
+    background-color: var(--bgcolor);
+    height: 10%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    // display: flex;
+}
+
+@include media-breakpoint-down(sm) {
+    .community-avatar {
+        height: 80px;
+        width: 80px;
+    }
+
+    .profile-link {
+        font-size: 0.8rem;
+    }
+
+    .community-element {
+        padding: 0.1rem;
+    }
+
+    .community-info {
+        width: 220px;
+    }
+
+    .community-descision {
+        width: 100px;
+    }
+
+    .community-link {
+        font-size: 0.8rem;
+    }
+}
+
+@include media-breakpoint-up(sm) {
+    .community-avatar {
+        height: 100px;
+        width: 100px;
+    }
+
+    .profile-link {
+        font-size: 0.9rem;
+    }
+
+    .community-info {
+        width: 290px;
+    }
+
+    .community-descision {
+        width: 100px;
+    }
+
+    .community-link {
+        font-size: 0.8rem;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    .community-avatar {
+        height: 120px;
+        width: 120px;
+    }
+
+    .profile-link {
+        font-size: 1rem;
+    }
+
+    .community-info {
+        width: 200px;
+    }
+
+    .community-descision {
+        width: 100px;
+    }
+
+    .community-link {
+        font-size: 0.8rem;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .community-avatar {
+        height: 150px;
+        width: 150px;
+    }
+
+    .profile-link {
+        font-size: 1rem;
+    }
+
+    .community-info {
+        width: 55%;
+    }
+
+    .community-descision {
+        width: 35%;
+    }
+
+    .community-link {
+        font-size: 0.8rem;
+    }
+}
+
+.community-avatar {
+    margin: 0;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+
+.community-list {
+    width: 100%;
+}
+
+.profile-link {
+    cursor: pointer;
+}
+
+a {
+    color: #e2e2e2;
+    text-decoration: none;
+}
+
+a:hover {
+    filter: brightness(0.8);
+}
+
+.community-info {
+    vertical-align: top;
+    // width: 15rem;
+    margin-right: 1rem;
+    display: inline-block;
+}
+
+.community-link {
+    width: 100%;
+}
+
+.community-descision {
+    padding: 0;
+    // display: inline-block;
+    display: inline-block;
+    // width: 10rem;
+    // text-align: right;
+    position: inherit;
+    vertical-align: middle;
+    top: auto;
+}
+
+.community-filter {
+    padding-right: 4%;
+}

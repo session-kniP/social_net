@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { useRoutes } from './routes';
 import { BrowserRouter } from 'react-router-dom';
 import { useAuth } from '../src/hooks/auth.hook';
 import { AuthContext } from './context/AuthContext';
 import { AuthorizedNavBar } from './components/AuthorizedNavBar';
 import { NotAuthorizedNavBar } from './components/NotAuthorizedNavBar';
-import { NewsContext, UserContext } from './dev/DevContext';
-import { TOKEN_NAME } from './constants/constants';
 
 export default () => {
     const { isToken, login, logout } = useAuth();
@@ -27,7 +25,7 @@ export default () => {
                     )}
                     <div className="container-fluid w-100 p-1 h-100">
                         <div className="row justify-content-sm-center flex-wrap w-100 ml-0 h-100">
-                            <div className="col-sm-12 col-md-6 col-lg-5 w-100 px-0 pb-0 h-100">
+                            <div className="col-12 col-md-11 col-lg-9 col-xl-7 w-100 px-0 pb-0 h-100">
                                 {routes && (
                                     <div className="page-body">{routes}</div>
                                 )}

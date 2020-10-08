@@ -4,8 +4,10 @@ import Avatar from '../Avatar';
 import AdditionalInfo from './AdditionalInfo';
 import { UserCommunityStatus } from '../community/UserCommunityStatus';
 import { useHttpRequest } from '../../api/request/httpRequest.hook';
+import { Link } from 'react-router-dom';
+import { ChatType } from '../../components/chat/ChatType';
+import { M_COMMUNITY } from '../../constants/mappings';
 
-const communityUrl = '/api/community';
 
 const ProfileHeader = ({
     user,
@@ -37,7 +39,7 @@ const ProfileHeader = ({
     const subscribeHandler = async (e) => {
         e.preventDefault();
         const response = await httpRequest({
-            url: communityUrl + '/subscribe',
+            url: `${M_COMMUNITY}/subscribe`,
             method: 'POST',
             body: { id: user.id },
         });
@@ -47,7 +49,7 @@ const ProfileHeader = ({
     const unsubscribeHandler = async (e) => {
         e.preventDefault();
         const response = await httpRequest({
-            url: communityUrl + '/unsubscribe',
+            url: `${M_COMMUNITY}/unsubscribe`,
             method: 'POST',
             body: { id: user.id },
         });
@@ -57,7 +59,7 @@ const ProfileHeader = ({
     const acceptFriendRequestHandler = async (e) => {
         e.preventDefault();
         const response = await httpRequest({
-            url: communityUrl + '/acceptFriendRequest',
+            url: `${M_COMMUNITY}/acceptFriendRequest`,
             method: 'POST',
             body: { id: user.id },
         });
@@ -67,7 +69,7 @@ const ProfileHeader = ({
     const removeFriendHandler = async (e) => {
         e.preventDefault();
         const response = await httpRequest({
-            url: communityUrl + '/removeFriend',
+            url: `${M_COMMUNITY}/removeFriend`,
             method: 'POST',
             body: { id: user.id },
         });
@@ -133,9 +135,9 @@ const ProfileHeader = ({
     };
 
     return (
-        <div className="container mx-0 px-0">
-            <div className="row justify-content-center min-vw-50 w-100 m-0">
-                <div className="col-4 col-xl-3 px-2 py-2 profile-user-image-panel">
+        <div className="container mx-auto px-0">
+            <div className="row justify-content-center min-vw-50 m-0">
+                <div className="px-2 py-2 profile-user-image-panel m-0">
                     <Avatar
                         onModalShow={onModalShow}
                         src={
@@ -175,7 +177,7 @@ const ProfileHeader = ({
                             <a className="link upload-new-avatar my-2 text-center">
                                 <label
                                     htmlFor="avatar-loader"
-                                    className="my-0 mx-0"
+                                    className="my-0 mx-1"
                                 >
                                     Upload new avatar
                                 </label>
@@ -188,10 +190,21 @@ const ProfileHeader = ({
                             </a>
                         </div>
                     ) : (
-                        switchLinkByStatus(user.communityStatus)
+                        <>
+                            {switchLinkByStatus(user.communityStatus)}
+                            {user.id && (
+                                <Link
+                                    to={{ pathname: `/chat/${user.id}`, state: { type: ChatType.PRIVATE }}}
+                                    
+                                    className="link my-2 text-center"
+                                >
+                                    Open dialogue
+                                </Link>
+                            )}
+                        </>
                     )}
                 </div>
-                <div className="col-8 mx-0 px-1 px-md-3">
+                <div className="profile-additional-info mx-0 px-1 px-md-3">
                     <div className="profile-name-view">
                         {user.userInfo.firstName != null &&
                             user.userInfo.lastName != null && (

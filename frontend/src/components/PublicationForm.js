@@ -1,6 +1,6 @@
 import React from 'react';
-import '../styles/publicationForm.css';
-import '../styles/index.css';
+import '../styles/publicationForm.scss';
+import '../styles/index.scss';
 import { TextInput } from './TextInput';
 
 const PublicationForm = ({ isOpened, onClose, onSubmit }) => {

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/api/community")
+@RequestMapping("/api/v1/community")
 public class CommunityController {
 
     private final UserCommunityService userCommunityService;
@@ -182,8 +182,8 @@ public class CommunityController {
     @PostMapping("/removeFriend")
     public ResponseEntity<InfoMessageDto> removeFriend(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody UserCommunityRequestDto requestDto) {
-
+            @RequestBody UserCommunityRequestDto requestDto
+    ) {
         User candidate;
 
         try {

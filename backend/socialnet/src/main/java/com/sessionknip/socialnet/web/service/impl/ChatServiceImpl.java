@@ -13,10 +13,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.print.attribute.standard.PageRanges;
+import javax.swing.text.html.Option;
+import javax.transaction.Transactional;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("chatServiceImpl")
 public class ChatServiceImpl extends NullAndEmptyChecker implements ChatService {
@@ -44,16 +48,18 @@ public class ChatServiceImpl extends NullAndEmptyChecker implements ChatService 
     }
 
     @Override
-    public Chat findPrivateByUserCommunities(UserCommunity first, UserCommunity second, Integer page, Integer howMuch) throws ChatServiceException {
-        List<Chat> chat = chatRepo.findPrivate(first, second, ChatType.PRIVATE, PageRequest.of(page, howMuch));
+    @Transactional
+    public Chat findPrivateByUserCommunities(UserCommunity first, UserCommunity second) throws ChatServiceException {
+        Optional<Chat> chat = chatRepo.findPrivate(first, second, ChatType.PRIVATE);
         if (chat.isEmpty()) {
-            throw new ChatServiceException(String.format("Can't find private chat with user ids: %d and %d", first.getUser().getId(), second.getUser().getId()));
+            chat = Optional.of(new Chat(ChatType.PRIVATE, Arrays.stream(new UserCommunity[]{first, second}).collect(Collectors.toSet())));
+            chatRepo.save(chat.get());
         }
-        return chat.get(0);
+        return chat.get();
     }
 
     @Override
-    public void createChat(Chat chat) throws ChatServiceException {
+    public Chat createChat(Chat chat) throws ChatServiceException {
         if (chat.getId() != null) {
             Optional<Chat> candidate = chatRepo.findById(chat.getId());
             if (candidate.isPresent()) {
@@ -69,9 +75,9 @@ public class ChatServiceImpl extends NullAndEmptyChecker implements ChatService 
             Iterator<UserCommunity> users = chat.getMembers().iterator();
 
             //private chat for two unique users should be unique and single
-            List<Chat> privateCandidate = chatRepo.findPrivate(users.next(), users.next(), ChatType.PRIVATE, PageRequest.of(0, 1));
+            Optional<Chat> privateCandidate = chatRepo.findPrivate(users.next(), users.next(), ChatType.PRIVATE);
 
-            if (privateCandidate.size() > 0) {
+            if (privateCandidate.isPresent()) {
                 throw new ChatServiceException("Private chat for these users already exists");
             }
 
@@ -79,7 +85,7 @@ public class ChatServiceImpl extends NullAndEmptyChecker implements ChatService 
             chat.setTitle(null);
         }
 
-        chatRepo.save(chat);
+        return chatRepo.save(chat);
     }
 
     @Override

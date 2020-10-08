@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-@RequestMapping(value = "/api/auth")
+@RequestMapping(value = "/api/v1/auth")
 public class AuthController {
 
     private final UserServiceImpl userService;

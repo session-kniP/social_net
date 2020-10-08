@@ -62,20 +62,20 @@ public interface UserCommunityRepo extends JpaRepository<UserCommunity, Long> {
     void addFriend(@Param("incoming_friend_id") Long incomingFriendId, @Param("outgoing_friend_id") Long outgoingFriendId);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "delete from user_subs where subscriber_id=:id", nativeQuery = true)
-    void removeSubscriberById(@Param("id") Long id);
+    @Query(value = "delete from user_subs where subscriber_id=:subscriber_id and subscription_id=:subscription_id", nativeQuery = true)
+    void removeSubscriberById(@Param("subscriber_id") Long subscriberId, @Param("subscription_id") Long subscriptionId);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "delete from user_subs where subscription_id=:id", nativeQuery = true)
-    void removeSubscriptionById(@Param("id") Long id);
+    @Query(value = "delete from user_subs where subscription_id=:subscription_id and subscriber_id=:subscriber_id", nativeQuery = true)
+    void removeSubscriptionById(@Param("subscription_id") Long subscriptionId, @Param("subscriber_id") Long subscriberId);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "delete from user_friends where incoming_friend_id=:id", nativeQuery = true)
-    void removeIncomingFriendById(@Param("id") Long id);
+    @Query(value = "delete from user_friends where incoming_friend_id=:incoming_friend_id and outgoing_friend_id=:outgoing_friend_id", nativeQuery = true)
+    void removeIncomingFriendById(@Param("incoming_friend_id") Long incomingFriendId, @Param("outgoing_friend_id") Long outgoingFriendId);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "delete from user_friends where outgoing_friend_id=:id", nativeQuery = true)
-    void removeOutgoingFriendById(@Param("id") Long id);
+    @Query(value = "delete from user_friends where outgoing_friend_id=:outgoing_friend_id and incoming_friend_id=:incoming_friend_id", nativeQuery = true)
+    void removeOutgoingFriendById(@Param("outgoing_friend_id") Long outgoingFriendId, @Param("incoming_friend_id") Long incomingFriendId);
 
     @Query(value = "select uc.subscriptions from UserCommunity uc where :subscription member of uc.subscriptions and uc.id=:id")
     List<User> findSubscriptionsWithObjectByUserId(@Param("subscription") User user, @Param("id") Long id, @PageableDefault(size = 1) Pageable pageable);

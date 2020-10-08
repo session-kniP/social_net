@@ -1,54 +1,94 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { CommunityPageMode } from '../../pages/CommunityPage';
 import { useCommunity } from '../../hooks/community.hook';
+import { useAvatar } from '../../hooks/avatar.hook';
+import { DEFAULT_PROFILE_PIC } from '../../constants/constants';
 
-export const CommunityElement = ({ id, firstName, lastName, title, mode = CommunityPageMode.FRIENDS, onDelete }) => {
+import '../../styles/profile.scss';
+import { M_PROFILE } from '../../constants/mappings';
+
+export const CommunityElement = ({
+    id,
+    firstName,
+    lastName,
+    title, //for user is username
+    mode = CommunityPageMode.FRIENDS,
+    onDelete,
+}) => {
     const history = useHistory();
-    const { subscribe, unsubscribe, acceptFriendRequest, removeFriend } = useCommunity();
+    const {
+        subscribe,
+        unsubscribe,
+        acceptFriendRequest,
+        removeFriend,
+    } = useCommunity();
+
+    const [avatar, setAvatar] = useState(null);
+    const { getAvatar } = useAvatar();
 
     const acceptFriendRequestHandler = async (id) => {
         try {
-            const request = await acceptFriendRequest(id);
+            const response = await acceptFriendRequest(id);
             onDelete(id);
         } catch (e) {
-            console.error(e);
+            console.error(e.cause.message);
         }
     };
 
     const subscribtionHandler = async (id) => {
         try {
-            const request = await subscribe(id);
+            const response = await subscribe(id);
             onDelete(id);
         } catch (e) {
-            console.error(e);
+            console.error(e.cause.message);
         }
     };
 
     const unsubscriptionHandler = async (id) => {
         try {
-            const request = await unsubscribe(id);
+            console.log('UNSUB')
+            const response = await unsubscribe(id);
             onDelete(id);
         } catch (e) {
-            console.error(e);
+            console.error(e.cause.message);
         }
     };
 
     const removeFriendHandler = async (id) => {
         try {
-            const request = await removeFriend(id);
+            const response = await removeFriend(id);
             onDelete(id);
         } catch (e) {
-            console.error(e);
+            console.error(e.cause.message);
         }
     };
+
+    useEffect(() => {
+        async function loadAvatar() {
+            try {
+                const avatarUrl = `${M_PROFILE}/getAvatar?id=${id}`;
+                const responseAvatar = await getAvatar(avatarUrl);
+                if (responseAvatar.size && responseAvatar.size != 0) {
+                    const avatar = global.URL.createObjectURL(responseAvatar);
+                    setAvatar(avatar);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadAvatar();
+    }, [getAvatar]);
 
     const elementOfMode = (mode) => {
         switch (mode) {
             case CommunityPageMode.SUBSCRIBERS:
                 return (
-                    <div className="community-descision">
-                        <a className="link community-link accept" onClick={() => acceptFriendRequestHandler(id)}>
+                    <div className="community-descision mx-0 text-center h-100 align-center">
+                        <a
+                            className="link community-link accept d-inline-block"
+                            onClick={() => acceptFriendRequestHandler(id)}
+                        >
                             Accept friend request
                         </a>
                     </div>
@@ -56,8 +96,12 @@ export const CommunityElement = ({ id, firstName, lastName, title, mode = Commun
 
             case CommunityPageMode.SUBSCRIPTIONS:
                 return (
-                    <div className="community-descision">
-                        <a className="link community-link decline" onClick={() => unsubscriptionHandler(id)}>
+                    <div className="community-descision mx-0 text-center">
+                        {console.log('THIS IS SUBSCRIPTIONS')}
+                        <a
+                            className="link community-link decline"
+                            onClick={() => unsubscriptionHandler(id)}
+                        >
                             Unsubscribe
                         </a>
                     </div>
@@ -65,8 +109,11 @@ export const CommunityElement = ({ id, firstName, lastName, title, mode = Commun
 
             case CommunityPageMode.FRIENDS:
                 return (
-                    <div className="community-descision">
-                        <a className="link community-link decline" onClick={() => removeFriendHandler(id)}>
+                    <div className="community-descision mx-0 text-center">
+                        <a
+                            className="link community-link decline"
+                            onClick={() => removeFriendHandler(id)}
+                        >
                             Remove friend
                         </a>
                     </div>
@@ -74,8 +121,11 @@ export const CommunityElement = ({ id, firstName, lastName, title, mode = Commun
 
             case CommunityPageMode.ALL:
                 return (
-                    <div className="community-descision">
-                        <a className="link community-link accept" onClick={() => subscribtionHandler(id)}>
+                    <div className="community-descision mx-0 text-center">
+                        <a
+                            className="link community-link accept"
+                            onClick={() => subscribtionHandler(id)}
+                        >
                             Add as friend
                         </a>
                     </div>
@@ -84,20 +134,31 @@ export const CommunityElement = ({ id, firstName, lastName, title, mode = Commun
     };
 
     return (
-        <div className="community-element" key={id}>
-            <div className="profile-user-image-panel">
-                <img className="community-avatar" src="../../resources/images/default.jpg"></img>
+        <div className="community-element row" key={id}>
+            <div className="profile-user-image-panel m-0 p-0">
+                <div
+                    className="community-avatar"
+                    style={{
+                        backgroundImage: `url(${
+                            avatar ? avatar : DEFAULT_PROFILE_PIC
+                        })`,
+                    }}
+                ></div>
             </div>
             <div className="profile-user-info-panel">
-                <div className="community-info">
+                <div className="community-info mx-lg-2 mx-1">
                     {firstName && lastName && (
                         <a href={'/profile/' + id}>
-                            <label className="profile-link">{firstName + ' ' + lastName}</label>
+                            <label className="profile-link">
+                                {firstName + ' ' + lastName}
+                            </label>
                         </a>
                     )}
                     <br />
                     <a href={'/profile/' + id}>
-                        <label className="profile-username profile-link">{title}</label>
+                        <label className="profile-username profile-link">
+                            {title}
+                        </label>
                     </a>
                 </div>
                 {elementOfMode(mode)}

@@ -1,3 +1,8 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
+
 .publication {
     margin: 10px auto;
     padding: 3px;
@@ -22,16 +27,11 @@
 }
 
 .publication-author-info {
-    font-size: .7rem;
     text-decoration-line: none;
 }
 
 .publication-author-info:hover {
     color: chocolate;
-}
-
-.publication-date-info {
-    font-size: .5rem;
 }
 
 .publication-content {
@@ -41,12 +41,39 @@
 
 .publication-theme {
     color: #9666a8;
-    font-size: 1.5rem;
-    padding: 1rem;
+}
+
+@include media-breakpoint-down(lg) {
+    .publication-theme {
+        font-size: 1.4rem;
+    }
+
+    .publication-author-info {
+        font-size: 1rem;
+    }
+
+    .publication-text {
+        padding:0;
+        font-size: 1rem;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .publication-theme {
+        font-size: 1.2rem;
+    }
+
+    .publication-text {
+        font-size: 0.9rem;
+    }
+
+    .publication-author-info {
+    font-size: 0.9rem;
+    }
 }
 
 .publication-text {
     width: 100%;
     text-align: justify;
+    /* font-size: 1rem; */
 }
-

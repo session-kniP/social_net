@@ -1,22 +1,27 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { WsChat } from '../hooks/ws/wsChat.hook';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { WsChat } from '../websocket/WsChat';
+import { useParams, useLocation } from 'react-router-dom';
 import { useHttpRequest } from '../api/request/httpRequest.hook';
 import { ChatForm } from '../components/form/ChatFrom';
-
-import '../styles/index.css';
-import '../styles/chat.css';
-import '../styles/publicationForm.css';
 import { ChatBlock } from '../components/chat/ChatBlock';
 import { DataSource } from '../data/DataSource';
+import { isMobile } from 'mobile-device-detect';
+import { ChatType } from '../components/chat/ChatType';
 
+import '../styles/index.scss';
+import '../styles/chat.scss';
+import '../styles/publicationForm.scss';
+
+//crutch
 const useForceUpdate = () => {
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue((value) => ++value); // update the state to force render
+    const [value, setValue] = useState(true); // integer state
+    return () => setValue((value) => !value); // update the state to force render
 };
 
-export const ChatPage = () => {
-    const id = useParams().id;
+export const ChatPage = (props) => {
+    let id = useParams().id;
+    const location = useLocation();
+    const type = location.state ? location.state.type : ChatType.DIALOGUE;
     const { httpRequest } = useHttpRequest();
 
     const source = new DataSource(httpRequest);
@@ -26,24 +31,36 @@ export const ChatPage = () => {
     const [wsChat, setWsChat] = useState(null);
     const [chat, setChat] = useState(null);
 
-    let textInput = React.createRef();
+    const textInput = React.createRef();
+    const chatBlock = React.createRef(); //actually reference on chat, not chat-block!
 
     const loadElements = async () => {
-        const chatCallback = (chatInstance) => {
-            chat.chatList = [chatInstance].concat(chat.chatList);
-            setChat(chat);
-            forceUpdate();
-        };
+        try {
+            const chatCallback = (chatInstance) => {
+                chat.chatList = [chatInstance].concat(chat.chatList);
+                setChat(chat);
+                forceUpdate();
+            };
 
-        const wsChat = new WsChat(id, chatCallback, source);
-        const chat = await wsChat.loadChat();
-        setChat({ title: chat.title, chatList: chat.chatList });
-        setWsChat(wsChat);
+            const wsChat = new WsChat(type, chatCallback, source);
 
-        wsChat.connectChat();
+            if (type == ChatType.PRIVATE) {
+                await wsChat.getChatId(id).then((result) => (id = result));
+            }
+
+            const chat = await wsChat.loadChat(id);
+
+            setChat({ title: chat.title, chatList: chat.chatList });
+            setWsChat(wsChat);
+
+            wsChat.connectChat(id);
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     useEffect(() => {
+        formUpdatedHandler();
         loadElements();
     }, []);
 
@@ -54,17 +71,47 @@ export const ChatPage = () => {
         textInput.current.focus();
     };
 
+    const percent = (fullValue, percent) => {
+        return (percent * fullValue) / 100;
+    };
+
+    const formUpdatedHandler = () => {
+        const el = chatBlock.current;
+
+        if (el) {
+            const fullHeight = isMobile
+                ? screen.availHeight
+                : document.body.clientHeight;
+            // document.body.clientHeight;
+            const textHeight = textInput.current.clientHeight;
+
+            setTimeout(() => {
+                el.style.height = `auto`;
+                el.style.height = `${
+                    fullHeight -
+                    percent(fullHeight, isMobile ? 36 : 14.7) -
+                    textHeight
+                }px`; //todo think how to remove these magical numbers
+            }, 0);
+        }
+    };
+
     return (
         <div className="content-block-main justify-items-center">
-            {chat && chat.chatList ? (
-                <div className="chat row align-items-end mb-2">
-                    <ChatBlock chat={chat} />
+            {chat && chat.chatList && (
+                <div
+                    ref={chatBlock}
+                    className="chat col-12 col-sm-11 m-auto row align-items-end mb-2"
+                >
+                    <ChatBlock ref={chatBlock} chat={chat} />
                 </div>
-            ) : (
-                <div>No messages at all</div>
             )}
-            <div className="chat-form col-12 p-0 py-2">
-                <ChatForm sendBtnHandler={sendBtnHandler} ref={textInput} />
+            <div className="chat-form col-12 col-sm-11 m-auto p-0 py-2">
+                <ChatForm
+                    sendBtnHandler={sendBtnHandler}
+                    formCallback={formUpdatedHandler}
+                    ref={textInput}
+                />
             </div>
         </div>
     );

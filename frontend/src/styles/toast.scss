@@ -1,0 +1,28 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.toast-success, .toast-success>* {
+    background-color: rgb(168, 196, 255);
+    color: rgb(71, 84, 104);
+}
+
+.toast-error, .toast-error>* {
+    background-color: rgb(190, 94, 98);
+    color: rgb(104, 77, 78);
+}
+
+.toast-warning, .toast-warning>* {
+    background-color: rgb(196, 147, 73);
+    color: rgb(104, 90, 70);
+}
+
+.toast-header {
+    color: rgb(26, 26, 26);
+    background-attachment: inherit;
+    filter: brightness(1.5);
+}
+
+.text-muted {
+    color: rgb(26, 26, 26);
+}

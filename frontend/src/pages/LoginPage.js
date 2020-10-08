@@ -1,53 +1,63 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useHttpRequest } from '../api/request/httpRequest.hook';
-import '../styles/index.css';
-import '../styles/authForm.css';
+import '../styles/index.scss';
+import '../styles/authForm.scss';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../src/hooks/auth.hook';
 import { AuthContext } from '../context/AuthContext';
-import {RequestDataType} from '../api/request/RequestDataType';
+import { RequestDataType } from '../api/request/RequestDataType';
+import { Toast } from '../components/toast/Toast';
+import { ToastType } from '../components/toast/ToastType';
+import $ from 'jquery';
+import { M_AUTH } from '../constants/mappings';
 
 export default () => {
     const { httpRequest } = useHttpRequest();
     const { login } = useContext(AuthContext);
     const history = useHistory();
 
-    let username = React.createRef();
-    let password = React.createRef();
+    const username = React.createRef();
+    const password = React.createRef();
+
+    const [errorToast, setErrorToast] = useState(null);
 
     function inputChangeHandler(e) {
         // some front-end validation here
     }
 
-    function clearForm() {
-        username.current.innerText = '';
-        password.current.innerText = '';
-    }
+    const authSubmitBtnHandler = async (e) => {
+        e.preventDefault();
 
-    async function authSubmitBtnHandler(e) {
         try {
             const responseData = await httpRequest({
-                url: '/api/auth/login',
+                url: `${M_AUTH}/login`,
                 method: 'POST',
-                body: { username: username.current.value, password: password.current.value },
-                type: RequestDataType.JSON
+                body: {
+                    username: username.current.value,
+                    password: password.current.value,
+                },
+                type: RequestDataType.JSON,
             });
 
-            console.log('RESPONSE DATA', responseData);
             login(responseData.token, responseData.id);
 
             // history.push("/profile");
             history.go();
         } catch (e) {
-            clearForm();
-            
-            console.error(e);
+            setErrorToast(
+                <Toast
+                    type={ToastType.ERROR}
+                    header={`Error`}
+                    body={e.message}
+                />
+            );
+            $(`.${ToastType.ERROR}`).toast('show');
         }
     }
 
     return (
         <div className="content-block-main">
-            <div className="authForm">
+            <form className="authForm">
                 <h2>Welcome login page.</h2>
                 <h3>Please, authorize or create an account</h3>
 
@@ -69,82 +79,19 @@ export default () => {
                     onChange={inputChangeHandler}
                 />
                 <br />
-                <button className="authSubmitBtn" onClick={authSubmitBtnHandler}>
+                <button
+                    className="authSubmitBtn"
+                    onClick={authSubmitBtnHandler}
+                >
                     Login
                 </button>
                 <br />
                 <p>
-                    If you don't have an account yet, you can <a href="/registration">register</a> it
+                    If you don't have an account yet, you can{' '}
+                    <a href="/registration">register</a> it
                 </p>
-            </div>
+            </form>
+            {errorToast && errorToast}
         </div>
     );
 };
-
-// class LoginPage extends React.Component {
-//     constructor(props) {
-//         super(props);
-
-//         this.changeHandler = this.changeHandler.bind(this);
-//         this.performAuthorization = this.performAuthorization.bind(this);
-//         // this.
-
-//         this.state = {
-//             username: '',
-//             password: '',
-//         };
-//     }
-
-//     changeHandler(event) {
-//         this.setState({ [event.target.name]: event.target.value });
-//     }
-
-//     performAuthorization() {
-//         const request = new Request();
-
-//         try {
-//             const data = request.request({url: '/api/auth/login', method: 'POST', body: { ...this.state }});
-//             console.log(request.state.loading);
-//             console.log('Data is', data);
-//         } catch (e) {
-//             console.error(e);
-//         }
-//     }
-
-//     render() {
-//         return (
-//             <div>
-//                 <h1>Hi, I'm Login Page!!!</h1>
-//                 <div className="authField">
-//                     <input
-//                         placeholder="Username"
-//                         id="username"
-//                         name="username"
-//                         type="text"
-//                         onChange={this.changeHandler}
-//                     />
-//                     <label htmlFor="username"></label>
-//                 </div>
-
-//                 <div className="authField">
-//                     <input
-//                         placeholder="Password"
-//                         id="password"
-//                         name="password"
-//                         type="password"
-//                         onChange={this.changeHandler}
-//                     />
-//                     <label htmlFor="password"></label>
-//                 </div>
-
-//                 <div className="authBtn">
-//                     <button className="performAuthBtn" onClick={this.performAuthorization}>
-//                         Authorize
-//                     </button>
-//                 </div>
-//             </div>
-//         );
-//     }
-// }
-
-// export default LoginPage;

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface ChatRepo extends JpaRepository<Chat, Long> {
 
-    @Query("from Chat")
+    @Query("from Chat c where c.id=:id")
     Optional<Chat> findById(Long id);
 
     @Query("from Chat c where :userCommunity member of c.members")
@@ -22,6 +22,6 @@ public interface ChatRepo extends JpaRepository<Chat, Long> {
 
     //todo optimize: remove chat type, because it's private, or replace method by smth like 'findByTwoUserCommunities()'
     @Query("from Chat c where :first member of c.members and :second member of c.members and c.type = :type")
-    List<Chat> findPrivate(@Param("first") UserCommunity first, @Param("second") UserCommunity second, @Param("type") ChatType type, Pageable pageable);
+    Optional<Chat> findPrivate(@Param("first") UserCommunity first, @Param("second") UserCommunity second, @Param("type") ChatType type);
 
 }

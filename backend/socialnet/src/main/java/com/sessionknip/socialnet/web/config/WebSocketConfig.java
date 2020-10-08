@@ -59,7 +59,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 assert accessor != null;
-                String token = provider.resolveToken(accessor.getFirstNativeHeader("Authorization"));
+                String token = provider.resolveToken(accessor.getFirstNativeHeader(jwtHeader));
 
                 try {
                     if (token != null && provider.validateToken(token)) {
@@ -77,40 +77,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         });
     }
 
-    //    public class HandshakeHandler extends HandshakeWebSocketService {
-//
-//        public HandshakeHandler(RequestUpgradeStrategy strategy) {
-//            super(strategy);
-//        }
-//
-//        @Override
-//        public Mono<Void> handleRequest(ServerWebExchange exchange, WebSocketHandler handler) {
-//
-//            ServerHttpRequest request = exchange.getRequest();
-//            String token = provider.resolveToken(Objects.requireNonNull(request.getHeaders().get("Authorization")).get(0));
-//
-//            try {
-//                if(token != null && provider.validateToken(token)) {
-//                    return super.handleRequest(exchange, handler);
-//                } else {
-//                    return Mono.error(new WebSocketException("Token was null or invalid"));
-//                }
-//            } catch (TokenProviderException e) {
-//                return Mono.error(new WebSocketException("Token validation error"));
-//            }
-//        }
-//    }
-//
-//
-//    @Bean
-//    public WebSocketService webSocketService() {
-//        ReactorNettyRequestUpgradeStrategy strategy = new ReactorNettyRequestUpgradeStrategy();
-//        return new HandshakeHandler(strategy);
-//    }
-//
-//    @Bean
-//    public WebSocketHandlerAdapter handlerAdapter() {
-//        return new WebSocketHandlerAdapter(webSocketService());
-//    }
 
 }

@@ -14,6 +14,7 @@ import com.sessionknip.socialnet.web.service.MessageService;
 import com.sessionknip.socialnet.web.service.UserCommunityService;
 import com.sessionknip.socialnet.web.service.exception.ChatServiceException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -26,14 +27,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/api/community/chats")
+@RequestMapping("/api/v1/community/chats")
 public class ChatController {
 
     private final MessageSendingOperations<String> template;
@@ -54,6 +54,22 @@ public class ChatController {
         this.communityService = communityService;
     }
 
+    @GetMapping("/getPrivateId")
+    public ResponseEntity<?> getPrivateChatId(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam Long interlocutorId
+    ) {
+        try {
+            Chat chat = chatService.findPrivateByUserCommunities(
+                    communityService.getByUser(userDetails.getUser()),
+                    communityService.getByUserId(interlocutorId)
+            );
+
+            return new ResponseEntity<>(chat.getId(), HttpStatus.OK);
+        } catch (ChatServiceException e) {
+            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
 
     @GetMapping
     public ResponseEntity<List<ChatInfoDto>> getChats(
@@ -87,39 +103,17 @@ public class ChatController {
 
         try {
             Chat chat = chatService.findById(chatId);
+            
+            if (!chat.getMembers().contains(communityService.getByUser(userDetails.getUser()))) {
+                return new ResponseEntity<>(new InfoMessageDto("You are not a member of this chat"), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+
             List<MessageDto> messages =
                     messageService.findByChat(chat, page, howMuch).stream()
                             .map(message -> new MessageDto(new UserDto(message.getOwner()), message.getText(), message.getMessageDate(), message.getMessageTime()))
                             .collect(Collectors.toList());
 
-            return new ResponseEntity<>(new ChatContentDto(chat.getTitle(), messages), HttpStatus.OK);
-        } catch (ChatServiceException e) {
-            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
-
-    @GetMapping("/private/{userId}")
-    public ResponseEntity<?> getPrivateChat(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long userId,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer howMuch
-    ) {
-        page = page == null ? 0 : page;
-        howMuch = howMuch == null ? 10 : howMuch;
-
-        UserCommunity second = communityService.getByUserId(userId);
-        try {
-            Chat chat = chatService.findPrivateByUserCommunities(userDetails.getUser().getUserCommunity(), second, page, howMuch);
-            List<MessageDto> messages = chat.getMessages().stream()
-                    .map(m -> new MessageDto(
-                            new UserDto(m.getOwner()),
-                            m.getText(),
-                            m.getMessageDate(),
-                            m.getMessageTime()))
-                    .collect(Collectors.toList());
-
-            return new ResponseEntity<>(new ChatContentDto(messages), HttpStatus.OK);
+            return new ResponseEntity<>(new ChatContentDto(chat.getId(), chat.getTitle(), messages), HttpStatus.OK);
         } catch (ChatServiceException e) {
             return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -150,7 +144,7 @@ public class ChatController {
             return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>(chat, HttpStatus.OK);
+        return new ResponseEntity<>(new ChatContentDto(chat.getId(), chat.getTitle(), new ArrayList<>()), HttpStatus.OK);
     }
 
     @MessageMapping("/{chatId}/sendMessage")
@@ -160,12 +154,12 @@ public class ChatController {
             @DestinationVariable Long chatId,
             @Payload MessageDto messageDto
     ) throws Exception {
-//        System.out.println(userDetails.getUsername() + " : " + message.getText());
         User user = principal.getUserDetails().getUser();
         Message message = new Message(MessageType.MESSAGE, user, messageDto.getText(), chatService.findById(chatId));
-
         messageDto = new MessageDto(message);
         messageService.addMessage(message);
+
+        System.out.println(messageDto.getText());
         template.convertAndSend(String.format("/chatBroker/%s", chatId), messageDto);
     }
 

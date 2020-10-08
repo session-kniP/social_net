@@ -1,9 +1,8 @@
-import '@popperjs/core';
-import 'bootstrap/dist/js/bootstrap';
+import 'bootstrap/dist/js/bootstrap.min';
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../styles/index.css';
-import '../styles/navBar.css';
+import '../styles/index.scss';
+import '../styles/navBar.scss';
 
 const NavBarType = Object.freeze({
     MAPPING: 0,
