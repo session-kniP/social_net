@@ -26,6 +26,9 @@ public class TokenProvider {
     @Value("${jwt.token.expired}")
     private Long expiration;
 
+    @Value("${jwt.token.header}")
+    private String tokenHeader;
+
     private final UserDetailsServiceImpl userDetailsService;
     private final BCryptPasswordEncoder encoder;
 
@@ -69,7 +72,7 @@ public class TokenProvider {
 
     //get token value from http request
     public String resolveToken(HttpServletRequest request) {
-        String tokenValue = request.getHeader("Authorization");
+        String tokenValue = request.getHeader(tokenHeader);
         return resolveToken(tokenValue);
     }
 

@@ -7,10 +7,10 @@ import HttpStatus from 'http-status-codes';
 import { RequestDataType } from './RequestDataType';
 import { useHistory } from 'react-router-dom';
 import { ChainException } from '../../exception/ChainException';
+import { useAuth } from '../../hooks/auth.hook';
 
 export const useHttpRequest = () => {
     const { request } = useRequest();
-    const { logout } = useContext(AuthContext);
     const history = useHistory();
 
     const httpRequest = useCallback(
@@ -41,7 +41,6 @@ export const useHttpRequest = () => {
                     : response;
             } catch (e) {
                 if(!e.code) {
-                    logout();
                     throw new ChainException({ message: e.message, cause: e });
                 }
 
@@ -51,8 +50,6 @@ export const useHttpRequest = () => {
                     !e.code 
                 ) {
                     console.log('net');
-                    logout();
-                    history.go();
                 }
 
                 throw new ChainException({ message: e.cause.message, cause: e });

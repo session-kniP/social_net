@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { CommunityPageMode } from '../../pages/CommunityPage';
+import { CommunityPageMode } from './CommunityPageMode';
 import { useCommunity } from '../../hooks/community.hook';
-import { useAvatar } from '../../hooks/avatar.hook';
+import { useImageLoader } from '../../hooks/imageLoader.hook';
 import { DEFAULT_PROFILE_PIC } from '../../constants/constants';
 
 import '../../styles/profile.scss';
@@ -25,7 +25,7 @@ export const CommunityElement = ({
     } = useCommunity();
 
     const [avatar, setAvatar] = useState(null);
-    const { getAvatar } = useAvatar();
+    const { getAvatar, getCommunityPic } = useImageLoader();
 
     const acceptFriendRequestHandler = async (id) => {
         try {
@@ -67,8 +67,7 @@ export const CommunityElement = ({
     useEffect(() => {
         async function loadAvatar() {
             try {
-                const avatarUrl = `${M_PROFILE}/getAvatar?id=${id}`;
-                const responseAvatar = await getAvatar(avatarUrl);
+                const responseAvatar = await getAvatar(id);
                 if (responseAvatar.size && responseAvatar.size != 0) {
                     const avatar = global.URL.createObjectURL(responseAvatar);
                     setAvatar(avatar);
@@ -82,6 +81,14 @@ export const CommunityElement = ({
 
     const elementOfMode = (mode) => {
         switch (mode) {
+
+            case CommunityPageMode.COMMUNITIES:
+                return( 
+                <div className="">
+
+                </div>)
+
+
             case CommunityPageMode.SUBSCRIBERS:
                 return (
                     <div className="community-descision mx-0 text-center h-100 align-center">

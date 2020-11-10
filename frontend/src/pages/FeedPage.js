@@ -4,25 +4,31 @@ import { Publication } from '../components/Publication';
 import PublicationForm from '../components/PublicationForm';
 import { useHttpRequest } from '../api/request/httpRequest.hook';
 import { useHistory } from 'react-router-dom';
+import { useAuth } from '../hooks/auth.hook';
 import '../styles/index.scss';
 import '../styles/feedPage.scss';
 import { M_PUBLICATIONS } from '../constants/mappings';
 
-
 export const FeedPage = () => {
-    const {httpRequest} = useHttpRequest();
+    const { httpRequest } = useHttpRequest();
     const [publications, setPublications] = useState(null);
     const history = useHistory();
+    const { logout } = useAuth();
 
     const loadPublications = useCallback(async (page, howMuch) => {
         page = page || 0;
         howMuch = howMuch || 10;
-        
-        const response = await httpRequest({
-            url: `${M_PUBLICATIONS}/news?page=${page}&howMuch=${howMuch}`,
-            method: 'GET',
-        });
-        setPublications(response);
+        try {
+            const response = await httpRequest({
+                url: `${M_PUBLICATIONS}/news?page=${page}&howMuch=${howMuch}`,
+                method: 'GET',
+            });
+            setPublications(response);
+        } catch (e) {
+            console.error(e);
+            logout();
+            history.go();
+        }
     }, []);
 
     // const loadPublications = () => {
@@ -57,7 +63,6 @@ export const FeedPage = () => {
         } catch (e) {
             console.log(e);
         }
-        
     };
 
     return (

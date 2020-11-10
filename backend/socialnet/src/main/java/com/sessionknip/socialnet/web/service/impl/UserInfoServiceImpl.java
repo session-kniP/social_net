@@ -96,6 +96,10 @@ public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfo
             target.setSex(source.getSex());
         }
 
+        if (notNullAndNotEmpty(source.getStatus())) {
+            target.setStatus(source.getStatus());
+        }
+
         if (notNullAndNotEmpty(source.getEmail())) {
             if (!source.getEmail().equals(target.getEmail())) {
                 if (existsByEmail(source.getEmail())) {

@@ -1,4 +1,4 @@
-package com.sessionknip.socialnet.web.dto;
+package com.sessionknip.socialnet.web.dto.community;
 
 import com.sessionknip.socialnet.web.domain.Media;
 import com.sessionknip.socialnet.web.domain.Sex;
@@ -13,6 +13,7 @@ public class UserInfoDto {
     private String lastName;
     private Sex sex;
     private String email;
+    private String status;
     private Media avatar;
 
     public UserInfoDto() {}
@@ -22,6 +23,7 @@ public class UserInfoDto {
         this.lastName = info.getLastName();
         this.sex = info.getSex();
         this.email = info.getEmail();
+        this.status = info.getStatus();
         this.avatar = info.getAvatar();
     }
 

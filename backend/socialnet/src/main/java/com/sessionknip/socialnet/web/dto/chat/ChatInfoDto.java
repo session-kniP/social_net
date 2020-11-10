@@ -1,7 +1,6 @@
 package com.sessionknip.socialnet.web.dto.chat;
 
-import com.sessionknip.socialnet.web.dto.UserDto;
-import com.sessionknip.socialnet.web.dto.UserInfoDto;
+import com.sessionknip.socialnet.web.dto.community.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

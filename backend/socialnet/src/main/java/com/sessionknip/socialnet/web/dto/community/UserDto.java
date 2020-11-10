@@ -1,4 +1,4 @@
-package com.sessionknip.socialnet.web.dto;
+package com.sessionknip.socialnet.web.dto.community;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sessionknip.socialnet.web.domain.Role;

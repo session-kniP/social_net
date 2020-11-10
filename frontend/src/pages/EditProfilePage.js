@@ -7,10 +7,12 @@ import { M_PROFILE } from '../constants/mappings';
 import '../styles/index.scss';
 import '../styles/profile.scss';
 import '../styles/publicationForm.scss';
+import { useProfile } from '../hooks/profile.hook';
 
 export const EditProfilePage = () => {
     const [user, setUser] = useState(null);
     const { httpRequest } = useHttpRequest();
+    const { editProfile } = useProfile();
 
     const [state, setState] = useState(this);
 
@@ -53,30 +55,17 @@ export const EditProfilePage = () => {
     }, [getUser]);
 
     const sendEdit = useCallback(async () => {
-        const firstName = firstNameRef.current.value;
-        const lastName = lastNameRef.current.value;
-        const email = emailRef.current.value;
-        const sex = sexRef.current.options[sexRef.current.selectedIndex].value;
-
-        const body = {
-            userInfo: {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                sex: sex,
-            },
-        };
-
         try {
-            const response = await httpRequest({
-                url: `${M_PROFILE}/edit`,
-                method: 'POST',
-                body: body,
+            const response = await editProfile({
+                firstName: firstNameRef.current.value,
+                lastName: lastNameRef.current.value,
+                email: emailRef.current.value,
+                sex: sexRef.current.options[sexRef.current.selectedIndex].value,
             });
+
             setSuccessMsg(response.message);
         } catch (e) {
             setErrorMsg(e.message);
-            //popup
         }
     });
 
@@ -89,27 +78,20 @@ export const EditProfilePage = () => {
             {user && (
                 <div className="profile table">
                     <h1 style={{ marginTop: 0 }}>Edit profile</h1>
-                    <h2
-                        style={{ marginBottom: 0 }}
-                        className="profile-username"
-                    >
+                    <h2 style={{ marginBottom: 0 }} className="profile-username">
                         {user.username}
                     </h2>
 
                     <table className="profile table">
                         <tbody>
                             <tr className="profile table-row">
-                                <td className="profile table-key">
-                                    First name
-                                </td>
+                                <td className="profile table-key">First name</td>
                                 <td className="profile table-value">
                                     <input
                                         ref={firstNameRef}
                                         className="profile text-input"
                                         type="text"
-                                        defaultValue={
-                                            user.userInfo['firstName']
-                                        }
+                                        defaultValue={user.userInfo['firstName']}
                                     />
                                 </td>
                             </tr>
@@ -144,18 +126,13 @@ export const EditProfilePage = () => {
                                         type="mult"
                                         defaultValue={user.userInfo['sex']}
                                     >
-                                        {Object.entries(Sex).map(
-                                            (sex, index) => {
-                                                return (
-                                                    <option
-                                                        key={index}
-                                                        value={sex[0]}
-                                                    >
-                                                        {sex[1]}
-                                                    </option>
-                                                );
-                                            }
-                                        )}
+                                        {Object.entries(Sex).map((sex, index) => {
+                                            return (
+                                                <option key={index} value={sex[0]}>
+                                                    {sex[1]}
+                                                </option>
+                                            );
+                                        })}
                                     </select>
                                 </td>
                             </tr>
@@ -163,28 +140,16 @@ export const EditProfilePage = () => {
                     </table>
                     <br />
                     <div>
-                        <button
-                            className="publication-form-button send"
-                            onClick={sendEdit}
-                        >
+                        <button className="publication-form-button send" onClick={sendEdit}>
                             Apply
                         </button>
-                        <button
-                            className="publication-form-button decline"
-                            onClick={declineEdit}
-                        >
+                        <button className="publication-form-button decline" onClick={declineEdit}>
                             Decline all
                         </button>
-                        <label
-                            className="success-msg"
-                            hidden={successMsg ? false : true}
-                        >
+                        <label className="success-msg" hidden={successMsg ? false : true}>
                             {successMsg}
                         </label>
-                        <label
-                            className="error-msg"
-                            hidden={errorMsg ? false : true}
-                        >
+                        <label className="error-msg" hidden={errorMsg ? false : true}>
                             {errorMsg}
                         </label>
                     </div>

@@ -2,7 +2,7 @@ package com.sessionknip.socialnet.web.service;
 
 import com.sessionknip.socialnet.web.domain.User;
 import com.sessionknip.socialnet.web.domain.UserCommunity;
-import com.sessionknip.socialnet.web.dto.UserCommunityStatus;
+import com.sessionknip.socialnet.web.dto.community.UserCommunityStatus;
 import com.sessionknip.socialnet.web.service.exception.CommunityServiceException;
 
 import java.util.List;

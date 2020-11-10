@@ -2,7 +2,7 @@ package com.sessionknip.socialnet.web.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sessionknip.socialnet.web.domain.Publication;
-import com.sessionknip.socialnet.web.dto.UserDto;
+import com.sessionknip.socialnet.web.dto.community.UserDto;
 import lombok.Data;
 
 import java.time.LocalDate;

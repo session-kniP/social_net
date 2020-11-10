@@ -30,6 +30,15 @@
     transition: 0.3s;
 }
 
+.switch>.nav-link {
+    border-radius: 0;;
+    background: #383838;
+}
+
+.switch>.nav-link.active {
+    background: darken($color: #383838, $amount: 5);
+}
+
 .navbar-collapse.show >.nav-link {
     background-color: black;
 }

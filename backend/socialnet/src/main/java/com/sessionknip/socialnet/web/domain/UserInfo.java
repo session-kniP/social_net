@@ -27,16 +27,18 @@ public class UserInfo {
     private User user;
 
     @Column(name = "first_name")
-    private String firstName;
+    private String firstName = "";
 
     @Column(name = "last_name")
-    private String lastName;
+    private String lastName = "";
 
     @Enumerated(value = EnumType.ORDINAL)
-    private Sex sex;
+    private Sex sex = Sex.UNDEFINED;
 
     @Column(unique = true)
-    private String email;
+    private String email = "";
+
+    private String status = "";
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_media_id")
@@ -44,21 +46,18 @@ public class UserInfo {
     private Media avatar;
 
     public UserInfo() {
-        this.firstName = "";
-        this.lastName = "";
-        this.sex = Sex.UNDEFINED;
-        this.email = null;
     }
 
-    public UserInfo(String firstName, String lastName, Sex sex, String email) {
+    public UserInfo(String firstName, String lastName, Sex sex, String email, String status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.sex = sex;
         this.email = email;
+        this.status = status;
     }
 
     public void setEmail(String email) {
-        if (email.trim().isEmpty()) {
+        if (email == null || email.trim().isEmpty()) {
             email = null;
         }
         this.email = email;

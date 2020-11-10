@@ -1,16 +1,16 @@
 package com.sessionknip.socialnet.web.controller;
 
-import com.sessionknip.socialnet.web.domain.Media;
 import com.sessionknip.socialnet.web.domain.User;
 import com.sessionknip.socialnet.web.domain.UserInfo;
 import com.sessionknip.socialnet.web.dto.InfoMessageDto;
-import com.sessionknip.socialnet.web.dto.UserDto;
+import com.sessionknip.socialnet.web.dto.community.UserDto;
+import com.sessionknip.socialnet.web.dto.community.UserInfoDto;
 import com.sessionknip.socialnet.web.security.UserDetailsImpl;
 import com.sessionknip.socialnet.web.service.MediaService;
 import com.sessionknip.socialnet.web.service.UserService;
 import com.sessionknip.socialnet.web.service.exception.MediaServiceException;
 import com.sessionknip.socialnet.web.service.exception.UserServiceException;
-import org.springframework.beans.factory.annotation.Value;
+import org.modelmapper.ModelMapper;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
-
 @Controller
 @RequestMapping("/api/v1/profile")
 public class ProfileController {
@@ -29,9 +27,6 @@ public class ProfileController {
     private final UserService userService;
 
     private final MediaService mediaService;
-
-    @Value("${upload.files.path}")
-    private String uploadPath;
 
     public ProfileController(UserService userService, MediaService mediaService) {
         this.userService = userService;
@@ -72,13 +67,10 @@ public class ProfileController {
     public ResponseEntity<InfoMessageDto> edit(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserDto userDto) {
 
         User editUser = new User();
-        //todo edit info nullable
-        UserInfo editInfo = new UserInfo();
 
-        editInfo.setFirstName(userDto.getUserInfo().getFirstName());
-        editInfo.setLastName(userDto.getUserInfo().getLastName());
-        editInfo.setSex(userDto.getUserInfo().getSex());
-        editInfo.setEmail(userDto.getUserInfo().getEmail());
+        //dto to entity
+        ModelMapper mapper = new ModelMapper();
+        UserInfo editInfo = mapper.map(userDto.getUserInfo(), UserInfo.class);
 
         editUser.setUserInfo(editInfo);
 
@@ -91,7 +83,7 @@ public class ProfileController {
         return new ResponseEntity<>(new InfoMessageDto("Profile successfully edited"), HttpStatus.OK);
     }
 
-    @PostMapping("/loadAvatar")
+    @PostMapping("/uploadAvatar")
     public ResponseEntity<InfoMessageDto> loadAvatar(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam MultipartFile avatar
@@ -99,11 +91,8 @@ public class ProfileController {
 
         if (avatar != null) {
 
-            String randomUUID = UUID.randomUUID().toString();
-            String filename = randomUUID + "." + avatar.getOriginalFilename();
-
             try {
-                mediaService.saveAvatar(userDetails.getUser(), new Media(filename), avatar);
+                mediaService.saveAvatar(userDetails.getUser(), avatar);
             } catch (MediaServiceException e) {
                 return new ResponseEntity<>(new InfoMessageDto("Error while avatar uploading: " + e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
             }

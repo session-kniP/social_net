@@ -21,8 +21,8 @@ export const AuthorizedNavBar = () => {
             mappingLinks={[
                 { title: 'Home', href: '/profile' },
                 { title: 'Feed', href: '/feed' },
-                { title: 'Friends', href: '/friends' },
-                { title: 'Subscribers', href: '/subscribers' },
+                { title: 'Community', href: '/community' },
+                { title: 'Dialogues', href: '/dialogues' },
             ]}
             authLinks={[{ title: 'Log Out', onClick: logoutHandler }]}
             key={Math.random()}

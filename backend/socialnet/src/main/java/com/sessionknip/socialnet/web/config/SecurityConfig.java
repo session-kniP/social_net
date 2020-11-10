@@ -12,7 +12,6 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
 
     private final TokenFilter filter;
 
-
     public SecurityConfig(TokenFilter filter) {
         this.filter = filter;
     }

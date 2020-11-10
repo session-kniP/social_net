@@ -3,7 +3,6 @@ package com.sessionknip.socialnet.web.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,9 +44,9 @@ public class Message {
         this.messageType = messageType;
         this.owner = owner;
         this.text = text;
+        this.chat = chat;
         this.messageDate = LocalDate.now();
         this.messageTime = LocalTime.now();
-        this.chat = chat;
     }
 
     @Override

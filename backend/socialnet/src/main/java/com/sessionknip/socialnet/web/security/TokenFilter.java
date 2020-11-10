@@ -12,6 +12,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Random;
 
 @Component
 public class TokenFilter extends GenericFilterBean {
@@ -25,7 +26,6 @@ public class TokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String token = provider.resolveToken((HttpServletRequest) request);
-
         try {
             if (token != null && provider.validateToken(token)) {
                 Authentication authentication = provider.getAuthentication(token);

@@ -12,13 +12,18 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MediaServiceImpl implements MediaService {
 
-    @Value("${upload.files.path}")
+    @Value("${upload.files.avatars.users.path}")
     private String uploadPath;
 
     private final MediaRepo mediaRepo;
@@ -31,9 +36,15 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public void saveAvatar(User user, Media avatarInfo, MultipartFile avatar) throws MediaServiceException {
+    @Transactional
+    public void saveAvatar(User user, MultipartFile avatar) throws MediaServiceException {
 
-        String avatarPath = String.format("%s/%s/avatar", uploadPath, user.getUsername());
+        String randomUUID = UUID.randomUUID().toString();
+        String filename = randomUUID + "." + avatar.getOriginalFilename();
+
+        Media avatarInfo = new Media(filename);
+
+        String avatarPath = String.format("%s/%s/avatar", uploadPath, user.getId());
         File uploadDir = new File(avatarPath);
 
         if (!uploadDir.exists()) {
@@ -56,10 +67,55 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public Resource getAvatar(User user) throws MediaServiceException {
         try {
-            String avatarPath = String.format("%s/%s/avatar", uploadPath, user.getUsername());
-            return new FileSystemResource(new File(avatarPath + "/" + user.getUserInfo().getAvatar().getMediaName()));
+            String avatarPath = String.format("%s/%s/avatar", uploadPath, user.getId());
+            File dir = new File(avatarPath + "/" + user.getUserInfo().getAvatar().getMediaName());
+
+            if (!dir.exists()) {
+                return null;
+            }
+
+            return new FileSystemResource(dir);
         } catch (NullPointerException e) {
             throw new MediaServiceException("Avatar is null", e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteAvatar(User user) throws MediaServiceException {
+        String avatarPath = String.format("%s/%s/avatar", uploadPath, user.getId());
+        File avatar = new File(avatarPath + "/" + user.getUserInfo().getAvatar().getMediaName());
+
+        if (!avatar.exists()) {
+            throw new MediaServiceException("Avatar doesn't exists");
+        }
+
+        if (!avatar.delete()) {
+            throw new MediaServiceException("Can't delete avatar");
+        }
+
+        File avatarDir = new File(avatarPath);
+
+        if (!avatarDir.exists()) {
+            throw new MediaServiceException("Avatar doesn't exists");
+        }
+
+        List<File> attributes = Arrays.stream(Objects.requireNonNull(avatarDir.listFiles()))
+                .sorted((prev, next) -> {
+                    assert prev != null;
+                    try {
+                        return Files.readAttributes(next.toPath(), BasicFileAttributes.class).creationTime()
+                                .compareTo(Files.readAttributes(prev.toPath(), BasicFileAttributes.class).creationTime());
+                    } catch (IOException e) {
+                        return 0;
+                    }
+                })
+                .collect(Collectors.toList());
+
+        Media avatarInfo = new Media(attributes.get(0).getName());
+        user.getUserInfo().setAvatar(avatarInfo);
+        mediaRepo.save(avatarInfo);
+
+        userService.update(user);
     }
 }

@@ -2,7 +2,8 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { FeedPage } from './pages/FeedPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { CommunityPage, CommunityPageMode } from './pages/CommunityPage';
+import { CommunityPage } from './pages/CommunityPage';
+import { CommunityPageMode } from './components/community/CommunityPageMode';
 import LoginPage from './pages/LoginPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { EditProfilePage } from './pages/EditProfilePage';
@@ -22,17 +23,18 @@ export const useRoutes = (isAuthorized) => {
                 <Route exact path="/feed">
                     <FeedPage />
                 </Route>
-                <Route exact path="/subscriptions">
-                    <CommunityPage mode={CommunityPageMode.SUBSCRIPTIONS} />
-                </Route>
-                <Route exact path="/subscribers">
-                    <CommunityPage mode={CommunityPageMode.SUBSCRIBERS} />
-                </Route>
-                <Route exact path="/friends">
-                    <CommunityPage mode={CommunityPageMode.FRIENDS} />
+                <Route exact path="/community">
+                    <CommunityPage
+                        modes={[
+                            CommunityPageMode.FRIENDS,
+                            CommunityPageMode.SUBSCRIBERS,
+                            CommunityPageMode.SUBSCRIPTIONS,
+                            CommunityPageMode.COMMUNITIES,
+                        ]}
+                    />
                 </Route>
                 <Route exact path="/users">
-                    <CommunityPage mode={CommunityPageMode.ALL} />
+                    <CommunityPage modes={[CommunityPageMode.ALL]} />
                 </Route>
                 <Route exact path="/editProfile">
                     <EditProfilePage />

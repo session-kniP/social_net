@@ -2,7 +2,7 @@ package com.sessionknip.socialnet.web.controller.chat;
 
 import com.sessionknip.socialnet.web.domain.*;
 import com.sessionknip.socialnet.web.dto.InfoMessageDto;
-import com.sessionknip.socialnet.web.dto.UserDto;
+import com.sessionknip.socialnet.web.dto.community.UserDto;
 import com.sessionknip.socialnet.web.dto.chat.ChatContentDto;
 import com.sessionknip.socialnet.web.dto.chat.ChatInfoDto;
 import com.sessionknip.socialnet.web.dto.chat.MessageDto;
@@ -14,7 +14,6 @@ import com.sessionknip.socialnet.web.service.MessageService;
 import com.sessionknip.socialnet.web.service.UserCommunityService;
 import com.sessionknip.socialnet.web.service.exception.ChatServiceException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -33,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
+@RestController
 @RequestMapping("/api/v1/community/chats")
 public class ChatController {
 

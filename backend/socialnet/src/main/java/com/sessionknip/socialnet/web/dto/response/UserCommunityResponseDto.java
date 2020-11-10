@@ -1,6 +1,6 @@
 package com.sessionknip.socialnet.web.dto.response;
 
-import com.sessionknip.socialnet.web.dto.UserDto;
+import com.sessionknip.socialnet.web.dto.community.UserDto;
 import lombok.Data;
 
 import java.util.List;

@@ -2,7 +2,7 @@ package com.sessionknip.socialnet.web.dto.chat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sessionknip.socialnet.web.domain.Message;
-import com.sessionknip.socialnet.web.dto.UserDto;
+import com.sessionknip.socialnet.web.dto.community.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

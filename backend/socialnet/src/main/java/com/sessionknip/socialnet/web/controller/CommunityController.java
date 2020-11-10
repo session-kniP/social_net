@@ -3,7 +3,8 @@ package com.sessionknip.socialnet.web.controller;
 import com.sessionknip.socialnet.web.domain.User;
 import com.sessionknip.socialnet.web.domain.UserInfo;
 import com.sessionknip.socialnet.web.dto.InfoMessageDto;
-import com.sessionknip.socialnet.web.dto.UserDto;
+import com.sessionknip.socialnet.web.dto.community.CommunityDto;
+import com.sessionknip.socialnet.web.dto.community.UserDto;
 import com.sessionknip.socialnet.web.dto.request.UserCommunityRequestDto;
 import com.sessionknip.socialnet.web.security.UserDetailsImpl;
 import com.sessionknip.socialnet.web.service.UserCommunityService;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,7 @@ public class CommunityController {
         try {
             User resultUser = userService.findById(id);
             UserDto resultDto = new UserDto(resultUser);
+
             resultDto.setCommunityStatus(userCommunityService.getCommunityStatus(userDetails.getUser(), resultUser));
 
             return new ResponseEntity<>(resultDto, HttpStatus.OK);
@@ -112,6 +115,15 @@ public class CommunityController {
         List<UserDto> subscriptions = userCommunityService.getSubscriptions(userDetails.getUser(), page, howMuch).stream().map(UserDto::new).collect(Collectors.toList());
 
         return new ResponseEntity<>(subscriptions, HttpStatus.OK);
+    }
+
+    @GetMapping("/communities")
+    public ResponseEntity<List<CommunityDto>> getCommunities(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer howMuch
+    ) {
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
     @PostMapping("/subscribe")
