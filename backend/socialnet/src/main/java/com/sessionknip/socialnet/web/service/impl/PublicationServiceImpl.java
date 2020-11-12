@@ -1,6 +1,7 @@
 package com.sessionknip.socialnet.web.service.impl;
 
 import com.sessionknip.socialnet.web.domain.Publication;
+import com.sessionknip.socialnet.web.domain.User;
 import com.sessionknip.socialnet.web.repository.PublicationRepo;
 import com.sessionknip.socialnet.web.service.NullAndEmptyChecker;
 import com.sessionknip.socialnet.web.service.PublicationService;
@@ -90,6 +91,11 @@ public class PublicationServiceImpl extends NullAndEmptyChecker implements Publi
     @Override
     public List<Publication> findMultiple(Integer page, Integer howMuch) {
         return publicationRepo.findAllByOrderByPublicationDateDescPublicationTimeDesc(PageRequest.of(page, howMuch)).getContent();
+    }
+
+    @Override
+    public List<Publication> findUserPublications(Integer page, Integer howMuch, User user) {
+        return publicationRepo.findUsersPublications(user, PageRequest.of(page, howMuch)).getContent();
     }
 
     @Override

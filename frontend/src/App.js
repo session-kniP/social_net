@@ -25,7 +25,7 @@ export default () => {
                     )}
                     <div className="container-fluid w-100 p-1 h-100">
                         <div className="row justify-content-sm-center flex-wrap w-100 ml-0 h-100">
-                            <div className="col-12 col-md-11 col-lg-9 col-xl-7 w-100 px-0 pb-0 h-100">
+                            <div className="col-12 col-md-12 col-lg-11 col-xl-8 w-100 px-0 pb-0 h-100">
                                 {routes && (
                                     <div className="page-body">{routes}</div>
                                 )}

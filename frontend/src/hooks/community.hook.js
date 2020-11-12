@@ -6,7 +6,6 @@ export const useCommunity = () => {
     const { httpRequest } = useHttpRequest();
 
     const communityRequest = async (mapping, id) => {
-        console.log(M_COMMUNITY)
         try {
             const response = await httpRequest({
                 url: `${M_COMMUNITY}/${mapping}`,

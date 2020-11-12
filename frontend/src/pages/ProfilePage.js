@@ -1,17 +1,15 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ProfileHeader from '../components/profile/ProfileHeader';
-import { UserContext } from '../dev/DevContext';
-import { useHttpRequest } from '../api/request/httpRequest.hook';
 import { USER_ID } from '../constants/constants';
+import { useProfile } from '../hooks/profile.hook';
 
 import '../styles/index.scss';
 import '../styles/profile.scss';
 import { useImageLoader } from '../hooks/imageLoader.hook';
-import { M_COMMUNITY, M_PROFILE } from '../constants/mappings';
-import { useCommunity } from '../hooks/community.hook';
 import { useAuth } from '../hooks/auth.hook';
-import { constants } from 'fs';
+import { usePublications } from '../hooks/publications.hook';
+import { Publication } from '../components/Publication';
 
 export const ProfilePage = () => {
     const id = useParams().id;
@@ -20,30 +18,23 @@ export const ProfilePage = () => {
 
     const [user, setUser] = useState(null);
     const [avatar, setAvatar] = useState(null);
-    const { httpRequest } = useHttpRequest();
+    const [publications, setPublications] = useState(null);
 
     const { logout } = useAuth();
 
-    const { getImageLink, uploadAvatar, getAvatar } = useImageLoader();
+    const { getProfile } = useProfile();
+    const { getUserPublications } = usePublications();
+
+    const { getImageLink, uploadAvatar } = useImageLoader();
 
     const toastRef = React.createRef();
 
     const getUser = useCallback(async () => {
         try {
-            const profileRequestUrl = id ? `${M_COMMUNITY}/user?id=${id}` : `${M_PROFILE}`;
-            const responseData = await httpRequest({
-                url: profileRequestUrl,
-                method: 'GET',
-            });
-            setUser(responseData);
+            const { user, avatar } = await getProfile({ id });
 
-            const responseAvatar = await getAvatar(id);
-
-            if (responseAvatar.size != 0) {
-                const avatar = URL.createObjectURL(responseAvatar);
-
-                setAvatar(avatar);
-            }
+            setUser(user);
+            setAvatar(avatar);
         } catch (e) {
             console.error('ERROR', e);
             logout();
@@ -51,8 +42,20 @@ export const ProfilePage = () => {
         }
     }, []);
 
+    const loadPublications = useCallback(async () => {
+        try {
+            const response = await getUserPublications({ userId: id });
+            setPublications(response);
+        } catch (e) {
+            console.error(e);
+            logout();
+            history.go();
+        }
+    }, []);
+
     useEffect(() => {
         getUser();
+        loadPublications();
     }, [getUser]);
 
     // const user = useContext(UserContext);
@@ -81,9 +84,15 @@ export const ProfilePage = () => {
                     onModalClose={closeModal}
                     onLoadAvatar={uploadAvatar}
                     avatar={avatar}
-                    editable={user.id === localStorage.getItem(USER_ID) ? false : true}
+                    editable={user.id == localStorage.getItem(USER_ID) ? true : false}
                 />
             )}
+            <div className="content-block-publications mx-auto col-12 col-md-8 col-lg-8">
+                {publications &&
+                    publications.map((p) => {
+                        return <Publication props={p} key={Math.random()} />;
+                    })}
+            </div>
         </div>
     );
 };

@@ -11,21 +11,34 @@ import { ButtonGroup, Button } from 'react-bootstrap';
 import TextareaAutosize from 'react-textarea-autosize';
 import '../../styles/publicationForm.scss';
 import { useProfile } from '../../hooks/profile.hook';
-import { stat } from 'fs';
 
+/**
+ * @param {user} Object user dto object
+ * @param {isModalShow} boolean determines if the modal with avatar is open
+ * @param {onModalShow} function callback that is called when the modal is opening
+ * @param {onModalClose} function callback that is called when the modal is closing
+ * @param {onLoadAvatar} function callback that is called when the avatar is loaded with file system dialogue window
+ * @param {avatar} blob avatar object
+ * @param {editable} boolean determines if the profile can be changed by current user
+ */
 const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAvatar, avatar, editable }) => {
-
+    //additional info of user's page
     const [isInfoOpened, setIsInfoOpened] = useState(false);
-    const [statusEditable, setStatusEditable] = useState(false);
-
+    
+    //vanilla quotes: status itself
     const [status, setStatus] = useState(user.userInfo.status);
+    //determines if status editable
+    const [statusEditable, setStatusEditable] = useState(false);
+    //determines if a new status could be saved
     const [statusSaveable, setStatusSaveable] = useState(false);
-
+    //field of status 
     const statusRef = React.createRef();
 
     const { httpRequest } = useHttpRequest();
+    //profile requests
     const { editProfile } = useProfile();
 
+    // additional info handlers
     const infoClosingHandler = () => {
         setIsInfoOpened(false);
     };
@@ -34,12 +47,14 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
         setIsInfoOpened(true);
     };
 
+    // avatar handler
     const fileLoadedHandler = (e) => {
         if (e.target.value) {
             onLoadAvatar(e.target.files[0]);
         }
     };
 
+    //community actions
     const subscribeHandler = async (e) => {
         e.preventDefault();
         const response = await httpRequest({
@@ -80,6 +95,7 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
         history.go();
     };
 
+    //vanilla status events
     const statusChangeEvent = () => {
         const newStatus = statusRef.current.value;
         if (newStatus !== status) {
@@ -108,12 +124,11 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
     };
 
     useEffect(() => {
-        statusRef.current.addEventListener('click', () => setStatusEditable(true));
-        statusRef.current.addEventListener('focusout', () => setStatusEditable(false));
+        statusRef.current.addEventListener('click', () => editable && setStatusEditable(true));
+        statusRef.current.addEventListener('focusout', () => editable && setStatusEditable(false));
     }, []);
 
     const switchLinkByStatus = (status) => {
-        console.log(status);
         switch (status) {
             case UserCommunityStatus.SUBSCRIPTION:
                 return (
@@ -158,7 +173,7 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
 
     return (
         <div className="container mx-auto px-0">
-            <div className="row justify-content-center min-vw-50 m-0">
+            <div className="row justify-content-center m-0">
                 <div className="px-2 py-2 profile-user-image-panel m-0">
                     <Avatar onModalShow={onModalShow} src={avatar ? avatar : `../../../resources/images/default.jpg`} />
 
@@ -218,19 +233,12 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
                             maxRows={3}
                             className="publication-form-text w-100 h6 mb-0"
                             readOnly={!statusEditable}
-                            onClick={() => setStatusEditable(true)}
-                            onFocusOut={() => {
-                                if (statusSaveable) {
-                                    setStatusEditable(false);
-                                }
-                            }}
-                            placeholder={`Your status here...`}
+                            placeholder={editable && `Your status here...`}
                             onChange={() => statusChangeEvent()}
-                        >
-                            {status}
-                        </TextareaAutosize>
+                            value={status}
+                        />
                         {statusSaveable && (
-                            <ButtonGroup size="sm" className="w-100 d-flex justify-content-end" horizontal>
+                            <ButtonGroup size="sm" className="w-100 d-flex justify-content-end" horizontal="true">
                                 <Button
                                     variant="primary"
                                     className="col-sm-12 col-lg-2 col-md-3 m-1"

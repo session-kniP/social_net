@@ -22,7 +22,7 @@ public class Publication {
     private String text;
 
     @Column(name = "p_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM:dd:yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
     private LocalDate publicationDate;
 
     @Column(name = "p_time")

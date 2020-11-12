@@ -15,7 +15,7 @@ public class PublicationResponseDto {
     private String text;
     private UserDto author;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM:dd:yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
     private LocalDate date;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")

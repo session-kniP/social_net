@@ -3,6 +3,7 @@ import { useHttpRequest } from '../api/request/httpRequest.hook';
 import { useHistory } from 'react-router-dom';
 import { Sex } from '../components/profile/Sex';
 import { M_PROFILE } from '../constants/mappings';
+import {useAuth} from '../hooks/auth.hook';
 
 import '../styles/index.scss';
 import '../styles/profile.scss';
@@ -13,6 +14,8 @@ export const EditProfilePage = () => {
     const [user, setUser] = useState(null);
     const { httpRequest } = useHttpRequest();
     const { editProfile } = useProfile();
+
+    const {logout} = useAuth();
 
     const [state, setState] = useState(this);
 
@@ -46,6 +49,8 @@ export const EditProfilePage = () => {
             setUser(responseData);
         } catch (e) {
             console.log('ERROR', e);
+            logout();
+            history.go();
             // setUser(testUser);
         }
     }, []);

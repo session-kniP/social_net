@@ -4,10 +4,18 @@ import { USER_ID } from '../../constants/constants';
 
 const SCROLL_DECLINE_OFFSET = 100;
 
+/**
+ * @param {props} Array props of ChatBlock(chat itself)
+ * @param {ref} Object reference of chat scroll list
+ */
 export const ChatBlock = React.forwardRef((props, ref) => {
+    //chat dto with title, chat list, etc...
     const chat = props.chat;
     const userId = localStorage.getItem(USER_ID);
+    
     let lastDate;
+
+    //to scroll down it when new message is sent
     const lastMessageRef = React.createRef();
 
     const isNewDate = (date) => {

@@ -5,13 +5,17 @@ import PublicationForm from '../components/PublicationForm';
 import { useHttpRequest } from '../api/request/httpRequest.hook';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../hooks/auth.hook';
+import { usePublications } from '../hooks/publications.hook';
 import '../styles/index.scss';
 import '../styles/feedPage.scss';
 import { M_PUBLICATIONS } from '../constants/mappings';
 
 export const FeedPage = () => {
     const { httpRequest } = useHttpRequest();
+
     const [publications, setPublications] = useState(null);
+    const { getPublications, postPublication } = usePublications();
+
     const history = useHistory();
     const { logout } = useAuth();
 
@@ -19,10 +23,7 @@ export const FeedPage = () => {
         page = page || 0;
         howMuch = howMuch || 10;
         try {
-            const response = await httpRequest({
-                url: `${M_PUBLICATIONS}/news?page=${page}&howMuch=${howMuch}`,
-                method: 'GET',
-            });
+            const response = await getPublications({ page, howMuch });
             setPublications(response);
         } catch (e) {
             console.error(e);
@@ -49,16 +50,9 @@ export const FeedPage = () => {
         setIsOpened(true);
     };
 
-    const makePublicaion = ({ theme, text }) => {
+    const makePublication = async ({ theme, text }) => {
         try {
-            const response = httpRequest({
-                url: `${M_PUBLICATIONS}/makePublication`,
-                method: 'POST',
-                body: {
-                    theme: theme,
-                    text: text,
-                },
-            });
+            const response = await postPublication({ theme, text });
             history.go();
         } catch (e) {
             console.log(e);
@@ -74,7 +68,7 @@ export const FeedPage = () => {
                             New publication
                         </button>
                     )}
-                    <PublicationForm isOpened={isOpened} onClose={closeForm} onSubmit={makePublicaion} />
+                    <PublicationForm isOpened={isOpened} onClose={closeForm} onSubmit={makePublication} />
                 </div>
                 <div className="content-block-publications mx-auto col-12 col-md-8 col-lg-8">
                     {publications &&

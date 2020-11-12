@@ -2,9 +2,9 @@ import React from 'react';
 import { Sex } from '../../components/profile/Sex';
 
 const AdditionalInfo = ({ baseClass = '', isOpened = false, info = {} }) => {
-
+    
+    //if the sex is undefined let's imagine that there is no sex at all
     const isSex = (sex) => {
-        sex ? true : false;
         sex == Sex.UNDEFINED ? false : true;
     }
 
