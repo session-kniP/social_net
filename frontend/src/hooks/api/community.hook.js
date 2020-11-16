@@ -1,6 +1,6 @@
-import { useHttpRequest } from '../api/request/httpRequest.hook';
-import { M_COMMUNITY } from '../constants/mappings';
-import { ChainException } from '../exception/ChainException';
+import { useHttpRequest } from '../../api/request/httpRequest.hook';
+import { M_COMMUNITY } from '../../constants/mappings';
+import { ChainException } from '../../exception/ChainException';
 
 export const useCommunity = () => {
     const { httpRequest } = useHttpRequest();

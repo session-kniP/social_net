@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useHttpRequest } from '../api/request/httpRequest.hook';
+import { useHttpRequest } from '../../api/request/httpRequest.hook';
 
 const useUser = () => {
     const { httpRequest } = useHttpRequest();

@@ -8,18 +8,21 @@ import { useHttpRequest } from '../../api/request/httpRequest.hook';
 import { CommunityElement } from '../../components/community/CommunityElement';
 import {M_COMMUNITY} from '../../constants/mappings';
 import {CommunityPageMode} from './CommunityPageMode';
+import { useAuth } from '../../hooks/auth.hook';
 
 export const CommunityContent = ({ mode = CommunityPageMode.FRIENDS }) => {
     const filterRef = React.createRef();
 
     const [elements, setElements] = useState(null);
     const { httpRequest } = useHttpRequest();
+    const {logout} = useAuth();
 
     const loadElements = useCallback(async (page, howMuch, filters) => {
         try {
             page = page || 0;
             howMuch = howMuch || 10;
             filters = filters || [];
+
 
             const url = `${M_COMMUNITY}/${mode.toLowerCase()}?page=${page}&howMuch=${howMuch}&filters=${filters}`;
             console.log(url);
@@ -32,6 +35,8 @@ export const CommunityContent = ({ mode = CommunityPageMode.FRIENDS }) => {
             setElements(response);
         } catch (e) {
             console.log(e);
+            logout();
+            history.go();
         }
     }, []);
 

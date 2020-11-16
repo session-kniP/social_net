@@ -7,10 +7,12 @@ import com.sessionknip.socialnet.web.dto.request.PublicationRequestDto;
 import com.sessionknip.socialnet.web.dto.response.PublicationResponseDto;
 import com.sessionknip.socialnet.web.security.UserDetailsImpl;
 import com.sessionknip.socialnet.web.service.NullAndEmptyChecker;
+import com.sessionknip.socialnet.web.service.PublicationService;
 import com.sessionknip.socialnet.web.service.UserService;
 import com.sessionknip.socialnet.web.service.exception.PublicationServiceException;
 import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import com.sessionknip.socialnet.web.service.impl.PublicationServiceImpl;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,10 +26,13 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/v1/publications")
 public class PublicationsController extends NullAndEmptyChecker {
 
-    private final PublicationServiceImpl publicationService;
+    private final PublicationService publicationService;
     private final UserService userService;
 
-    public PublicationsController(PublicationServiceImpl publicationService, UserService userService) {
+    public PublicationsController(
+            @Qualifier("publicationServiceImpl") PublicationService publicationService,
+            @Qualifier("userServiceImpl") UserService userService
+    ) {
         this.publicationService = publicationService;
         this.userService = userService;
     }
@@ -67,13 +72,14 @@ public class PublicationsController extends NullAndEmptyChecker {
             news = publicationService.findUserPublications(page, howMuch, userDetails.getUser())
                     .stream().map(PublicationResponseDto::new).collect(Collectors.toList());
         } else {
-            try {
-                User user = userService.findById(userId);
-                news = publicationService.findUserPublications(page, howMuch, user)
-                        .stream().map(PublicationResponseDto::new).collect(Collectors.toList());
-            } catch (UserServiceException e) {
+            User user = userService.findById(userId);
+            if (user == null) {
                 return new ResponseEntity<>(new InfoMessageDto("Can't find user with id " + userId), HttpStatus.UNPROCESSABLE_ENTITY);
             }
+
+            news = publicationService.findUserPublications(page, howMuch, user)
+                    .stream().map(PublicationResponseDto::new).collect(Collectors.toList());
+
         }
 
         return new ResponseEntity<>(news, HttpStatus.OK);

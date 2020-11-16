@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Service
+@Service("publicationServiceImpl")
 public class PublicationServiceImpl extends NullAndEmptyChecker implements PublicationService {
 
     private final PublicationRepo publicationRepo;

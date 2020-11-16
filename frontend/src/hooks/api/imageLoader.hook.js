@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { useHttpRequest } from '../api/request/httpRequest.hook';
-import { RequestDataType } from '../api/request/RequestDataType';
-import { M_COMMUNITY, M_PROFILE } from '../constants/mappings';
+import { useHttpRequest } from '../../api/request/httpRequest.hook';
+import { RequestDataType } from '../../api/request/RequestDataType';
+import { M_COMMUNITY, M_PROFILE } from '../../constants/mappings';
 
 export const useImageLoader = () => {
     const { httpRequest } = useHttpRequest();

@@ -25,12 +25,12 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_info_id")
     @NotFound(action = NotFoundAction.IGNORE)
-    private UserInfo userInfo = new UserInfo();
+    private UserInfo userInfo;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_community_id")
     @NotFound(action = NotFoundAction.IGNORE)
-    private UserCommunity userCommunity = new UserCommunity();
+    private UserCommunity userCommunity;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))

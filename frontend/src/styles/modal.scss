@@ -1,7 +1,7 @@
 //@import 'bootstrap/scss/bootstrap.scss';
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/mixins";
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
 
 .modal {
     overflow-y: scroll;
@@ -19,28 +19,22 @@
 }
 
 @include media-breakpoint-up(sm) {
-    .modal-body, .modal-dialog {
-        width: max-content!important;
-        max-width: 576px!important;
-        max-height: 400px!important;
+    .modal-body,
+    .modal-dialog {
+        width: max-content !important;
+        max-width: 576px !important;
+        max-height: 400px !important;
     }
-
-    //.modal-image {
-    //    width: max-content;
-    //    max-width: 570px;
-    //    max-height: 400px;
-    //}
-   
 }
 
 @include media-breakpoint-up(md) {
-    .modal-body, .modal-dialog {
-        width: max-content!important;
-        max-width: 700px!important;
-        max-height: 400px!important;
+    .modal-body,
+    .modal-dialog {
+        width: max-content !important;
+        max-width: 700px !important;
+        max-height: 400px !important;
     }
 }
-
 
 .modal-content {
     display: inline-block;
@@ -63,9 +57,9 @@
     // max-height: 100%;
     // max-width: 100%;
     //display: flex;
-     max-width: 100%;
-     width: auto;
-     max-height: inherit;
+    max-width: 680px;
+    width: auto;
+    max-height: inherit;
 
     margin: auto;
 }
@@ -89,18 +83,6 @@
 .modal-header > .close-icon:hover {
     background-color: thistle;
 }
-
-//.modal-image {
-//    display: flex;
-//    text-align: center;
-//    position: relative;
-//    /* width: auto; */
-
-//    margin: 0 auto;
-//    padding: 0 auto;
-//    position: relative;
-//    z-index: 1;
-//}
 
 .modal-footer {
     padding: 0;

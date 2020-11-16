@@ -1,6 +1,6 @@
 import React from 'react';
-import { useHttpRequest } from '../api/request/httpRequest.hook';
-import { M_PROFILE, M_COMMUNITY } from '../constants/mappings';
+import { useHttpRequest } from '../../api/request/httpRequest.hook';
+import { M_PROFILE, M_COMMUNITY } from '../../constants/mappings';
 import { useImageLoader } from './imageLoader.hook';
 
 export const useProfile = () => {

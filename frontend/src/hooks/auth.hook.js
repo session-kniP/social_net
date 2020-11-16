@@ -1,7 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import {TOKEN_NAME, USER_ID} from '../constants/constants';
 
+/**
+ * @description hook with front-end auth methods(not an API's one)
+ */
 export const useAuth = () => {    
+
     const login = useCallback((token, user_id) => {
         localStorage.setItem(TOKEN_NAME, token);
         localStorage.setItem(USER_ID, user_id);

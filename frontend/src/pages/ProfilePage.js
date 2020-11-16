@@ -2,14 +2,15 @@ import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import { USER_ID } from '../constants/constants';
-import { useProfile } from '../hooks/profile.hook';
+import { useProfile } from '../hooks/api/profile.hook';
 
 import '../styles/index.scss';
 import '../styles/profile.scss';
-import { useImageLoader } from '../hooks/imageLoader.hook';
+import { useImageLoader } from '../hooks/api/imageLoader.hook';
 import { useAuth } from '../hooks/auth.hook';
-import { usePublications } from '../hooks/publications.hook';
+import { usePublications } from '../hooks/api/publications.hook';
 import { Publication } from '../components/Publication';
+import PublicationForm from '../components/PublicationForm';
 
 export const ProfilePage = () => {
     const id = useParams().id;
@@ -23,7 +24,7 @@ export const ProfilePage = () => {
     const { logout } = useAuth();
 
     const { getProfile } = useProfile();
-    const { getUserPublications } = usePublications();
+    const { getUserPublications, postPublication } = usePublications();
 
     const { getImageLink, uploadAvatar } = useImageLoader();
 
@@ -74,6 +75,19 @@ export const ProfilePage = () => {
         setModalShow(false);
     };
 
+    const isEditable = () => {
+        return user && user.id == localStorage.getItem(USER_ID) ? true : false;
+    };
+
+    const makePublication = async ({ theme, text }) => {
+        try {
+            const response = await postPublication({ theme, text });
+            history.go();
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
         <div className="content-block-main col-12 p-0 m-auto">
             {user && (
@@ -84,9 +98,15 @@ export const ProfilePage = () => {
                     onModalClose={closeModal}
                     onLoadAvatar={uploadAvatar}
                     avatar={avatar}
-                    editable={user.id == localStorage.getItem(USER_ID) ? true : false}
+                    editable={isEditable()}
                 />
             )}
+            {isEditable() && (
+                <div className="col-lg-8 col-md-10 col-12 d-flex mx-auto my-1">
+                    <PublicationForm onSubmit={makePublication} />
+                </div>
+            )}
+
             <div className="content-block-publications mx-auto col-12 col-md-8 col-lg-8">
                 {publications &&
                     publications.map((p) => {

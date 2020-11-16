@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Data
+@Table(name = "user_community")
 @Entity
 public class UserCommunity {
 
@@ -24,48 +25,38 @@ public class UserCommunity {
     private User user;
 
 
-//    @LazyCollection(value = LazyCollectionOption.FALSE)
+    //    @LazyCollection(value = LazyCollectionOption.FALSE)
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_subs",
             joinColumns = @JoinColumn(name = "subscription_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
-    private List<User> subscribers = new ArrayList<>();
+    private List<UserCommunity> subscribers = new ArrayList<>();
 
-//    @LazyCollection(value = LazyCollectionOption.FALSE)
+    //    @LazyCollection(value = LazyCollectionOption.FALSE)
     @NotFound(action = NotFoundAction.IGNORE)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_subs",
             joinColumns = @JoinColumn(name = "subscriber_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscription_id")
-    )
-    private List<User> subscriptions = new ArrayList<>();
+            inverseJoinColumns = @JoinColumn(name = "subscription_id"))
+    private List<UserCommunity> subscriptions = new ArrayList<>();
 
-
-//    @OneToMany(mappedBy = "friendsOwner", fetch = FetchType.LAZY)
-//    private List<User> userFriends = new ArrayList<>();
-
-//    @ElementCollection(targetClass = User.class, fetch = FetchType.LAZY)
-//    @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
-//    private List<User> userFriends = new ArrayList<>();
-
-//    @LazyCollection(value = LazyCollectionOption.FALSE)
     @ManyToMany
     @JoinTable(
             name = "user_friends",
             joinColumns = @JoinColumn(name = "outgoing_friend_id"),
             inverseJoinColumns = @JoinColumn(name = "incoming_friend_id"))
-    private List<User> incomingFriends = new ArrayList<>();
+    private List<UserCommunity> incomingFriends = new ArrayList<>();
 
-//    @LazyCollection(value = LazyCollectionOption.FALSE)
+    //    @LazyCollection(value = LazyCollectionOption.FALSE)
     @ManyToMany
     @JoinTable(
             name = "user_friends",
             joinColumns = @JoinColumn(name = "incoming_friend_id"),
             inverseJoinColumns = @JoinColumn(name = "outgoing_friend_id"))
-    private List<User> outgoingFriends = new ArrayList<>();
+    private List<UserCommunity> outgoingFriends = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -89,7 +80,7 @@ public class UserCommunity {
     }
 
 
-    public List<User> getUserFriends() {
+    public List<UserCommunity> getUserFriends() {
         return Stream.concat(incomingFriends.stream(), outgoingFriends.stream()).collect(Collectors.toList());
     }
 

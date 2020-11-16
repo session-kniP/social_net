@@ -10,7 +10,7 @@ import { M_COMMUNITY } from '../../constants/mappings';
 import { ButtonGroup, Button } from 'react-bootstrap';
 import TextareaAutosize from 'react-textarea-autosize';
 import '../../styles/publicationForm.scss';
-import { useProfile } from '../../hooks/profile.hook';
+import { useProfile } from '../../hooks/api/profile.hook';
 
 /**
  * @param {user} Object user dto object
@@ -217,7 +217,7 @@ const ProfileHeader = ({ user, isModalShow, onModalShow, onModalClose, onLoadAva
                 </div>
                 <div className="profile-additional-info mx-0 px-1 px-md-3">
                     <div className="profile-name-view">
-                        {user.userInfo.firstName != null && user.userInfo.lastName != null && (
+                        {user.userInfo.firstName != '' && user.userInfo.lastName != '' && (
                             <div>
                                 <label className="py-0 my-0">
                                     {user.userInfo.firstName + ' ' + user.userInfo.lastName}

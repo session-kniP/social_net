@@ -12,6 +12,7 @@ import com.sessionknip.socialnet.web.service.UserInfoService;
 import com.sessionknip.socialnet.web.service.UserService;
 import com.sessionknip.socialnet.web.service.exception.CommunityServiceException;
 import com.sessionknip.socialnet.web.service.exception.UserServiceException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,7 +31,11 @@ public class CommunityController {
     private final UserService userService;
     private final UserInfoService userInfoService;
 
-    public CommunityController(UserCommunityService userCommunityService, UserService userService, UserInfoService userInfoService) {
+    public CommunityController(
+            @Qualifier("userCommunityServiceImpl") UserCommunityService userCommunityService,
+            @Qualifier("userServiceImpl") UserService userService,
+            @Qualifier("userInfoServiceImpl") UserInfoService userInfoService
+    ) {
         this.userCommunityService = userCommunityService;
         this.userService = userService;
         this.userInfoService = userInfoService;
@@ -39,16 +44,15 @@ public class CommunityController {
     @GetMapping("/user")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam Long id) {
 
-        try {
-            User resultUser = userService.findById(id);
-            UserDto resultDto = new UserDto(resultUser);
-
-            resultDto.setCommunityStatus(userCommunityService.getCommunityStatus(userDetails.getUser(), resultUser));
-
-            return new ResponseEntity<>(resultDto, HttpStatus.OK);
-        } catch (UserServiceException e) {
+        User resultUser = userService.findById(id);
+        if (resultUser == null) {
             return new ResponseEntity<>(new InfoMessageDto("Can't find user with id " + id), HttpStatus.UNPROCESSABLE_ENTITY);
         }
+        UserDto resultDto = new UserDto(resultUser);
+
+        resultDto.setCommunityStatus(userCommunityService.getCommunityStatus(userDetails.getUser(), resultUser));
+
+        return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
     @GetMapping("/users")
@@ -129,11 +133,8 @@ public class CommunityController {
     @PostMapping("/subscribe")
     public ResponseEntity<InfoMessageDto> subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserCommunityRequestDto request) {
 
-        User candidate;
-
-        try {
-            candidate = userService.findById(request.getId());
-        } catch (UserServiceException e) {
+        User candidate = userService.findById(request.getId());
+        if (candidate == null) {
             return new ResponseEntity<>(new InfoMessageDto("This user doesn't exists"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
@@ -150,11 +151,8 @@ public class CommunityController {
     @PostMapping("/unsubscribe")
     public ResponseEntity<InfoMessageDto> unsubscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserCommunityRequestDto request) {
 
-        User candidate;
-
-        try {
-            candidate = userService.findById(request.getId());
-        } catch (UserServiceException e) {
+        User candidate = userService.findById(request.getId());
+        if (candidate == null) {
             return new ResponseEntity<>(new InfoMessageDto("This user doesn't exists"), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
@@ -173,12 +171,9 @@ public class CommunityController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserCommunityRequestDto requestDto
     ) {
-        User candidate;
-
-        try {
-            candidate = userService.findById(requestDto.getId());
-        } catch (UserServiceException e) {
-            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        User candidate = userService.findById(requestDto.getId());
+        if (candidate == null) {
+            return new ResponseEntity<>(new InfoMessageDto("Can't find user with id " + requestDto.getId()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -196,12 +191,9 @@ public class CommunityController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserCommunityRequestDto requestDto
     ) {
-        User candidate;
-
-        try {
-            candidate = userService.findById(requestDto.getId());
-        } catch (UserServiceException e) {
-            return new ResponseEntity<>(new InfoMessageDto(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        User candidate = userService.findById(requestDto.getId());
+        if (candidate == null) {
+            return new ResponseEntity<>(new InfoMessageDto("Can't find user with id " + requestDto.getId()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         try {

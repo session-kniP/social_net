@@ -8,7 +8,7 @@ import {useAuth} from '../hooks/auth.hook';
 import '../styles/index.scss';
 import '../styles/profile.scss';
 import '../styles/publicationForm.scss';
-import { useProfile } from '../hooks/profile.hook';
+import { useProfile } from '../hooks/api/profile.hook';
 
 export const EditProfilePage = () => {
     const [user, setUser] = useState(null);

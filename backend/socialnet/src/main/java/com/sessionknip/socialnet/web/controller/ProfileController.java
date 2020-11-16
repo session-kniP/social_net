@@ -11,6 +11,7 @@ import com.sessionknip.socialnet.web.service.UserService;
 import com.sessionknip.socialnet.web.service.exception.MediaServiceException;
 import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +29,10 @@ public class ProfileController {
 
     private final MediaService mediaService;
 
-    public ProfileController(UserService userService, MediaService mediaService) {
+    public ProfileController(
+            @Qualifier("userServiceImpl") UserService userService,
+            @Qualifier("mediaServiceImpl") MediaService mediaService
+    ) {
         this.userService = userService;
         this.mediaService = mediaService;
     }
@@ -46,7 +50,6 @@ public class ProfileController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(required = false) Long id
     ) {
-
         try {
             User user;
             if (id != null) {
@@ -57,7 +60,7 @@ public class ProfileController {
 
             Resource avatar = mediaService.getAvatar(user);
             return new ResponseEntity<>(avatar, HttpStatus.OK);
-        } catch (MediaServiceException | UserServiceException e) {
+        } catch (MediaServiceException e) {
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
 

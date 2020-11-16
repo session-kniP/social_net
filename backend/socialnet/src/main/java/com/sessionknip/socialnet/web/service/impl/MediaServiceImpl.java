@@ -6,6 +6,7 @@ import com.sessionknip.socialnet.web.repository.MediaRepo;
 import com.sessionknip.socialnet.web.service.MediaService;
 import com.sessionknip.socialnet.web.service.UserService;
 import com.sessionknip.socialnet.web.service.exception.MediaServiceException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -20,7 +21,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Service("mediaServiceImpl")
 public class MediaServiceImpl implements MediaService {
 
     @Value("${upload.files.avatars.users.path}")
@@ -30,7 +31,7 @@ public class MediaServiceImpl implements MediaService {
 
     private final UserService userService;
 
-    public MediaServiceImpl(MediaRepo mediaRepo, UserService userService) {
+    public MediaServiceImpl(MediaRepo mediaRepo, @Qualifier("userServiceImpl") UserService userService) {
         this.mediaRepo = mediaRepo;
         this.userService = userService;
     }

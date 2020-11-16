@@ -36,7 +36,7 @@ public class UserInfo {
     private Sex sex = Sex.UNDEFINED;
 
     @Column(unique = true)
-    private String email = "";
+    private String email = null;
 
     private String status = "";
 

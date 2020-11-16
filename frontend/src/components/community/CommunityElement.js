@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { CommunityPageMode } from './CommunityPageMode';
-import { useCommunity } from '../../hooks/community.hook';
-import { useImageLoader } from '../../hooks/imageLoader.hook';
+import { useCommunity } from '../../hooks/api/community.hook';
+import { useImageLoader } from '../../hooks/api/imageLoader.hook';
 import { DEFAULT_PROFILE_PIC } from '../../constants/constants';
 
 import '../../styles/profile.scss';
@@ -17,12 +17,7 @@ export const CommunityElement = ({
     onDelete,
 }) => {
     const history = useHistory();
-    const {
-        subscribe,
-        unsubscribe,
-        acceptFriendRequest,
-        removeFriend,
-    } = useCommunity();
+    const { subscribe, unsubscribe, acceptFriendRequest, removeFriend } = useCommunity();
 
     const [avatar, setAvatar] = useState(null);
     const { getAvatar, getCommunityPic } = useImageLoader();
@@ -47,7 +42,7 @@ export const CommunityElement = ({
 
     const unsubscriptionHandler = async (id) => {
         try {
-            console.log('UNSUB')
+            console.log('UNSUB');
             const response = await unsubscribe(id);
             onDelete(id);
         } catch (e) {
@@ -81,13 +76,8 @@ export const CommunityElement = ({
 
     const elementOfMode = (mode) => {
         switch (mode) {
-
             case CommunityPageMode.COMMUNITIES:
-                return( 
-                <div className="">
-
-                </div>)
-
+                return <div className=""></div>;
 
             case CommunityPageMode.SUBSCRIBERS:
                 return (
@@ -105,10 +95,7 @@ export const CommunityElement = ({
                 return (
                     <div className="community-descision mx-0 text-center">
                         {console.log('THIS IS SUBSCRIPTIONS')}
-                        <a
-                            className="link community-link decline"
-                            onClick={() => unsubscriptionHandler(id)}
-                        >
+                        <a className="link community-link decline" onClick={() => unsubscriptionHandler(id)}>
                             Unsubscribe
                         </a>
                     </div>
@@ -117,10 +104,7 @@ export const CommunityElement = ({
             case CommunityPageMode.FRIENDS:
                 return (
                     <div className="community-descision mx-0 text-center">
-                        <a
-                            className="link community-link decline"
-                            onClick={() => removeFriendHandler(id)}
-                        >
+                        <a className="link community-link decline" onClick={() => removeFriendHandler(id)}>
                             Remove friend
                         </a>
                     </div>
@@ -129,10 +113,7 @@ export const CommunityElement = ({
             case CommunityPageMode.ALL:
                 return (
                     <div className="community-descision mx-0 text-center">
-                        <a
-                            className="link community-link accept"
-                            onClick={() => subscribtionHandler(id)}
-                        >
+                        <a className="link community-link accept" onClick={() => subscribtionHandler(id)}>
                             Add as friend
                         </a>
                     </div>
@@ -146,9 +127,7 @@ export const CommunityElement = ({
                 <div
                     className="community-avatar"
                     style={{
-                        backgroundImage: `url(${
-                            avatar ? avatar : DEFAULT_PROFILE_PIC
-                        })`,
+                        backgroundImage: `url(${avatar ? avatar : DEFAULT_PROFILE_PIC})`,
                     }}
                 ></div>
             </div>
@@ -156,16 +135,13 @@ export const CommunityElement = ({
                 <div className="community-info mx-lg-2 mx-1">
                     {firstName && lastName && (
                         <a href={'/profile/' + id}>
-                            <label className="profile-link">
-                                {firstName + ' ' + lastName}
-                            </label>
+                            <label className="profile-link">{firstName + ' ' + lastName}</label>
+                            <br />
                         </a>
                     )}
-                    <br />
+
                     <a href={'/profile/' + id}>
-                        <label className="profile-username profile-link">
-                            {title}
-                        </label>
+                        <label className="profile-username profile-link">{title}</label>
                     </a>
                 </div>
                 {elementOfMode(mode)}

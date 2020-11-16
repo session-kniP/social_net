@@ -8,8 +8,8 @@ import java.util.List;
 public interface UserService {
 
     User register(User candidate) throws UserServiceException;
-    User findById(Long id) throws UserServiceException;
-    User findByUsername(String username) throws UserServiceException;
+    User findById(Long id);
+    User findByUsername(String username);
     List<User> findAll();
     void edit(User target, User source) throws UserServiceException;
     void update(User user);

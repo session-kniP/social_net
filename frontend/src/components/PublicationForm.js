@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../styles/publicationForm.scss';
 import '../styles/index.scss';
 import { TextInput } from './TextInput';
 
-const PublicationForm = ({ isOpened, onClose, onSubmit }) => {
+//{ isOpened, onClose, onSubmit }
+const PublicationForm = ({onSubmit}) => {
     let themeInput = React.createRef();
     let textInput = React.createRef();
     let errorLabel = React.createRef();
@@ -32,11 +33,26 @@ const PublicationForm = ({ isOpened, onClose, onSubmit }) => {
         themeInput.current.innerText = '';
         textInput.current.innerText = '';
 
-        onClose();
+        closeForm();
+    };
+
+    const [isOpened, setIsOpened] = useState(false);
+
+    const closeForm = () => {
+        setIsOpened(false);
+    };
+
+    const openForm = () => {
+        setIsOpened(true);
     };
 
     return (
         <React.Fragment>
+            {!isOpened && (
+                        <button className="feed-open-form-btn d-flex mx-auto m-0" onClick={() => openForm()}>
+                            New publication
+                        </button>
+                    )}
             {isOpened && (
                 <div className="publication-form col-12 m-0">
                     <h2 className="publication-form-title">What's new?</h2>
@@ -68,7 +84,7 @@ const PublicationForm = ({ isOpened, onClose, onSubmit }) => {
                             <div className="col-2" align="right">
                                 <button
                                     className="publication-form-button decline-rotate px-2"
-                                    onClick={() => onClose()}
+                                    onClick={() => closeForm()}
                                 >
                                     &times;
                                 </button>

@@ -1,20 +1,19 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useHttpRequest } from '../api/request/httpRequest.hook';
 import '../styles/index.scss';
 import '../styles/authForm.scss';
 import { useHistory } from 'react-router-dom';
-import { useAuth } from '../../src/hooks/auth.hook';
 import { AuthContext } from '../context/AuthContext';
-import { RequestDataType } from '../api/request/RequestDataType';
 import { Toast } from '../components/toast/Toast';
 import { ToastType } from '../components/toast/ToastType';
 import $ from 'jquery';
-import { M_AUTH } from '../constants/mappings';
+import {useAccount} from '../hooks/api/account.hook';
 
 export default () => {
-    const { httpRequest } = useHttpRequest();
     const { login } = useContext(AuthContext);
+    const {login: authenticate} = useAccount();
+
     const history = useHistory();
+
 
     const username = React.createRef();
     const password = React.createRef();
@@ -29,18 +28,12 @@ export default () => {
         e.preventDefault();
 
         try {
-            const responseData = await httpRequest({
-                url: `${M_AUTH}/login`,
-                method: 'POST',
-                body: {
-                    username: username.current.value,
-                    password: password.current.value,
-                },
-                type: RequestDataType.JSON,
-            });
-
-            login(responseData.token, responseData.id);
-
+            const response = await authenticate({
+                username: username.current.value,
+                password: password.current.value
+            })
+           
+            login(response.token, response.id);
             // history.push("/profile");
             history.go();
         } catch (e) {

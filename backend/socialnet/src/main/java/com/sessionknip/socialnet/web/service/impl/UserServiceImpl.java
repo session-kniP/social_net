@@ -8,6 +8,7 @@ import com.sessionknip.socialnet.web.service.UserInfoService;
 import com.sessionknip.socialnet.web.service.UserService;
 import com.sessionknip.socialnet.web.service.exception.UserServiceException;
 import com.sessionknip.socialnet.web.service.exception.UserInfoServiceException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service("userServiceImpl")
 public class UserServiceImpl extends NullAndEmptyChecker implements UserService {
 
     private final UserRepo userRepo;
     private final UserInfoService userInfoService;
 
-    public UserServiceImpl(UserRepo userRepo, UserInfoService userInfoService) {
+    public UserServiceImpl(UserRepo userRepo, @Qualifier("userInfoServiceImpl") UserInfoService userInfoService) {
         this.userRepo = userRepo;
         this.userInfoService = userInfoService;
     }
@@ -46,21 +47,20 @@ public class UserServiceImpl extends NullAndEmptyChecker implements UserService 
         return user;
     }
 
+    /**
+     * @return User with such id or null if user not found
+     * */
     @Override
-    public User findById(Long id) throws UserServiceException {
-        return userRepo.findById(id).orElseThrow(() -> new UserServiceException("Can't find user by id"));
-        //todo log + exception
+    public User findById(Long id) {
+        return userRepo.findById(id).orElse(null);
     }
 
+    /**
+     * @return User with such username or null if user not found
+     * */
     @Override
-    public User findByUsername(String username) throws UserServiceException {
-        User user = userRepo.findByUsername(username);
-
-        if (user == null) {
-            throw new UserServiceException(String.format("Can't find user with username '%s'", username));
-        }
-
-        return user;
+    public User findByUsername(String username) {
+        return userRepo.findByUsername(username);
     }
 
     @Override

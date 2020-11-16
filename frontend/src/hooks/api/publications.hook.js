@@ -1,6 +1,6 @@
 import { string } from 'prop-types';
-import { useHttpRequest } from '../api/request/httpRequest.hook';
-import { M_PUBLICATIONS } from '../constants/mappings';
+import { useHttpRequest } from '../../api/request/httpRequest.hook';
+import { M_PUBLICATIONS } from '../../constants/mappings';
 
 export const usePublications = () => {
 

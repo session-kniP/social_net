@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Service
+@Service("userInfoServiceImpl")
 public class UserInfoServiceImpl extends NullAndEmptyChecker implements UserInfoService {
 
     private final UserInfoRepo userInfoRepo;
